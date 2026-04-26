@@ -1,0 +1,46 @@
+.wrap {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.link,
+.avatarLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text);
+  text-decoration: none;
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  position: relative;
+}
+
+.iconBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.active {
+  color: #fff;
+}
+
+.active .iconBox {
+  filter: drop-shadow(0 0 0 #fff);
+}
+
+.navAvatar {
+  border: 1px solid var(--color-border);
+}
+
+.avatarLink.active .navAvatar {
+  border-color: #fff;
+  box-shadow: 0 0 0 1px #fff;
+}
+
+.badge {
+  z-index: 1;
+}

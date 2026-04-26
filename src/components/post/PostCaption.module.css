@@ -1,0 +1,44 @@
+.wrap {
+  padding: 0 0.75rem 0.4rem;
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.caption {
+  margin: 0;
+  word-wrap: break-word;
+}
+
+.strong {
+  color: var(--color-text) !important;
+  margin-right: 0.25rem;
+}
+
+.strong:hover {
+  color: var(--color-text-muted) !important;
+}
+
+.ellipsis {
+  /* truncated inline; optional */
+}
+
+.more {
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: inherit;
+  padding: 0 0.25rem;
+  cursor: pointer;
+}
+
+.lockedText {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+.viewAll {
+  margin: 0.35rem 0 0;
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  cursor: default;
+}

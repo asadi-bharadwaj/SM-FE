@@ -1,0 +1,17 @@
+.root {
+  padding: 2rem 1rem;
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.title {
+  margin: 0 0 0.5rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.desc {
+  margin: 0 0 1rem;
+  font-size: 0.875rem;
+}

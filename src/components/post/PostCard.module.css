@@ -1,0 +1,18 @@
+.root {
+  width: 100%;
+  max-width: var(--max-content-width);
+  background: #000;
+  border-bottom: 1px solid var(--color-border);
+  margin: 0 auto 1rem;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}

@@ -1,0 +1,48 @@
+.form {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.5rem 0.5rem;
+  border-top: 1px solid #262626;
+  background: #0a0a0a;
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  background: #262626;
+  border: 1px solid #363636;
+  border-radius: 22px;
+  color: #fff;
+  font-size: 0.9rem;
+  font-family: inherit;
+  padding: 0.4rem 0.85rem;
+  outline: none;
+}
+
+.send {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: #262626;
+  color: #fff;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.send:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.send:not(:disabled) {
+  background: var(--color-accent);
+  cursor: pointer;
+}
+
+.send:not(:disabled):hover {
+  filter: brightness(1.1);
+}

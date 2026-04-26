@@ -1,0 +1,24 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: var(--max-content-width);
+  margin: 0 auto;
+  align-items: center;
+}
+
+.wrap {
+  max-width: var(--max-content-width);
+  margin: 2rem auto;
+}
+
+.cta {
+  display: inline-block;
+  padding: 0.4rem 0.75rem;
+  background: var(--color-accent);
+  color: #fff !important;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+}

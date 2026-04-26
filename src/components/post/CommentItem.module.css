@@ -1,0 +1,16 @@
+.root {
+  font-size: 0.88rem;
+  line-height: 1.4;
+  padding: 0.1rem 0.75rem;
+  margin: 0;
+}
+
+.text {
+  word-wrap: break-word;
+}
+
+.meta {
+  margin-top: 0.15rem;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}

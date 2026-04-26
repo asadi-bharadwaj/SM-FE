@@ -1,0 +1,41 @@
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 1.5rem 2rem;
+  margin-bottom: 1.25rem;
+  width: 100%;
+}
+
+.ava {
+  border: 1px solid #363636;
+  flex-shrink: 0;
+}
+
+.right {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.handleRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.h2 {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin: 0;
+  color: #fff;
+}
+
+@media (min-width: 480px) {
+  .h2 {
+    font-size: 1.3rem;
+  }
+}

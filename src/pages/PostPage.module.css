@@ -1,0 +1,48 @@
+.page {
+  width: 100%;
+  max-width: var(--max-content-width);
+  margin: 0 auto;
+}
+
+.backRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: var(--max-content-width);
+  margin-bottom: 0.5rem;
+}
+
+.back {
+  background: none;
+  border: none;
+  color: var(--color-text);
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0.25rem 0;
+  font-family: inherit;
+}
+
+.back:hover {
+  color: var(--color-text-muted);
+}
+
+.muted a {
+  color: var(--color-text-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.muted a:hover {
+  text-decoration: underline;
+}
+
+.inner {
+  background: #000;
+  border: 1px solid #262626;
+  border-radius: 4px;
+  overflow: hidden;
+  width: 100%;
+  max-width: var(--max-content-width);
+  margin: 0 auto;
+}

@@ -1,0 +1,22 @@
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.4rem 0.75rem;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.liked {
+  color: var(--color-danger);
+  stroke: var(--color-danger);
+}
+
+.muted {
+  opacity: 0.4;
+  pointer-events: none;
+}

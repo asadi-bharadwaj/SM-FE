@@ -1,0 +1,43 @@
+.app {
+  min-height: 100%;
+  position: relative;
+  width: 100%;
+}
+
+.main {
+  display: flex;
+  min-height: 100%;
+  min-height: 100dvh;
+  justify-content: center;
+  max-width: 100%;
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem 0.75rem 1.5rem;
+  padding-bottom: 4.5rem;
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .content {
+    max-width: calc(100% - var(--right-rail-width) - var(--icon-rail-width) - 12px);
+    margin-right: 0;
+    padding: 0.5rem 1.25rem 1.5rem 0;
+  }
+}
+
+.bar {
+  height: 52px;
+  flex-shrink: 0;
+}
+
+@media (min-width: 768px) {
+  .content {
+    padding-bottom: 1.5rem;
+  }
+}

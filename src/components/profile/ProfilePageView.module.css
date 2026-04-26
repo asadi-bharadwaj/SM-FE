@@ -1,0 +1,76 @@
+.page {
+  max-width: var(--max-content-width);
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 0 1.5rem;
+  border-bottom: 1px solid #262626;
+  margin-bottom: 1.5rem;
+}
+
+.display {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0.25rem 0 0.2rem;
+}
+
+.bio {
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin: 0 0 0.2rem;
+  color: #fafafa;
+}
+
+.link {
+  color: var(--color-accent);
+  font-size: 0.85rem;
+  display: block;
+  margin: 0 0 0.4rem;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.priceLine {
+  color: var(--color-text-muted);
+  font-size: 0.78rem;
+  margin: 0.25rem 0 0.5rem;
+}
+
+.tabs {
+  display: flex;
+  border-top: 1px solid #262626;
+  width: 100%;
+  max-width: var(--max-content-width);
+  margin: 0.5rem 0 0;
+}
+
+.tabs button {
+  flex: 1;
+  text-align: center;
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  padding: 0.5rem 0.25rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.tactive {
+  color: #fff !important;
+  border-top: 1.5px solid #fff;
+  margin-top: -0.5px;
+}
+
+.savedEmpty {
+  text-align: center;
+  color: var(--color-text-muted);
+  padding: 1.5rem 0.5rem;
+  font-size: 0.9rem;
+  margin: 0;
+  width: 100%;
+}

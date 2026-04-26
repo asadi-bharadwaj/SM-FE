@@ -1,0 +1,23 @@
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.5rem;
+  align-items: center;
+}
+
+.pill {
+  font-size: 0.8rem;
+  min-height: 36px;
+  padding: 0.3rem 0.85rem;
+  border-radius: 8px;
+}
+
+.subbed {
+  color: #fff;
+  background: #262626 !important;
+  border: 1px solid #404040;
+}
+
+.subbed:hover {
+  color: #fff;
+}

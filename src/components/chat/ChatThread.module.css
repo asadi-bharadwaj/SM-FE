@@ -1,0 +1,71 @@
+.col {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  flex: 1;
+  background: #0a0a0a;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 0.5rem 0.5rem 0.2rem;
+  border-bottom: 1px solid #262626;
+  flex-shrink: 0;
+  background: #0a0a0a;
+}
+
+.hAva {
+  flex-shrink: 0;
+}
+
+.htop {
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.ht2 {
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+}
+
+.back {
+  display: flex;
+  text-decoration: none;
+  color: #fff;
+  line-height: 0;
+  padding: 0.15rem 0.15rem 0.15rem 0;
+  border-radius: 8px;
+  align-items: center;
+  justify-content: center;
+  margin-left: 0.15rem;
+}
+
+.backI {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+}
+
+.back:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.messages {
+  flex: 1;
+  list-style: none;
+  margin: 0;
+  padding: 0.75rem 0.65rem;
+  overflow-y: auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.messages > li,
+.messages > * {
+  display: list-item; /* for MessageBubble li - actually we use li inside - fix MessageBubble to not need list item from ul children */
+}
