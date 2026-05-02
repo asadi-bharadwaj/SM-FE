@@ -13,35 +13,33 @@ export function ProfilePage() {
   useEffect(() => {
     if (!username) return;
 
-    const url =
-      username === "me"
-        ? "http://localhost:8081/users/me"
-        : "http://localhost:8081/users/all";
+    if (username === "me") {
+      fetch("http://localhost:8081/users/me", {
+        headers: {
+          "X-User-Id": userId || "",
+        },
+      })
+        .then((r) => r.json())
+        .then((d) => setUser(d))
+        .finally(() => setLoading(false));
 
-    const options =
-      username === "me"
-        ? {
-            headers: {
-              "X-User-Id": userId || "",
-            },
-          }
-        : {};
+      return;
+    }
 
-    fetch(url, options)
-      .then((res) => res.json())
-      .then((data) => {
-        if (username === "me") {
-          setUser(data);
-        } else {
-          const found = data.find(
-            (u: any) =>
-              u.username?.toLowerCase() === username.toLowerCase()
-          );
-          setUser(found || null);
-        }
+    fetch("http://localhost:8081/users/all")
+      .then((r) => r.json())
+      .then((users) => {
+        const found = users.find(
+          (u: any) =>
+            String(u.username || "")
+              .toLowerCase()
+              .trim() === username.toLowerCase().trim()
+        );
+
+        setUser(found || null);
       })
       .finally(() => setLoading(false));
-  }, [username]);
+  }, [username, userId]);
 
   if (loading) return <div>Loading...</div>;
   if (!user) return <NotFoundPage />;
@@ -50,7 +48,7 @@ export function ProfilePage() {
     <ProfilePageView
       user={{
         id: String(user.id),
-        username: user.username || "user",
+        username: user.username,
         displayName: user.displayName || user.username,
         avatarUrl:
           user.avatarUrl ||
