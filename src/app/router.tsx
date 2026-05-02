@@ -36,7 +36,7 @@ export const router = createBrowserRouter([
     path: '/',
     element: isLoggedIn() ? <AppLayout /> : <Navigate to="/login" />,
     children: [
-      { index: true, element: <SearchPage /> },
+     { index: true, element: <Navigate to="/u/me" /> },
       { path: 'search', element: <SearchPage /> },
       { path: 'feed', element: <FeedPage /> },
       { path: 'u/:username', element: <ProfilePage /> },

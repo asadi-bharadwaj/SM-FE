@@ -1,32 +1,71 @@
-import { Outlet } from 'react-router-dom'
-import { IconRail } from '../components/nav/IconRail'
-import { RightRail } from './RightRail'
-import { useMediaQuery } from '../hooks/useMediaQuery'
-import styles from './AppLayout.module.css'
+import { Outlet, Link, useLocation } from 'react-router-dom'
 
-function MainPad() {
-  return <div className={styles.bar} aria-hidden />
+function NavItem({
+  to,
+  label,
+}: {
+  to: string
+  label: string
+}) {
+  const { pathname } = useLocation()
+
+  const active = pathname === to || pathname.startsWith(to + '/')
+
+  return (
+    <Link
+      to={to}
+      style={{
+        padding: '12px 14px',
+        borderRadius: '10px',
+        textDecoration: 'none',
+        color: '#fff',
+        background: active ? '#222' : 'transparent',
+        fontWeight: active ? 700 : 500,
+      }}
+    >
+      {label}
+    </Link>
+  )
 }
 
 export function AppLayout() {
-  const isNarrow = useMediaQuery('(max-width: 1023px)')
-  const isMobile = useMediaQuery('(max-width: 767px)')
-
   return (
-    <div className={styles.app}>
-      <IconRail />
-      {isMobile && <MainPad />}
-      <main
-        className={styles.main}
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: '240px 1fr',
+        minHeight: '100vh',
+        background: '#000',
+        color: '#fff',
+      }}
+    >
+      <aside
         style={{
-          paddingLeft: isMobile ? 0 : 'var(--icon-rail-width)',
-          paddingRight: !isNarrow ? 'var(--right-rail-width)' : 0,
+          borderRight: '1px solid #222',
+          padding: '20px',
         }}
       >
-        <div className={styles.content}>
-          <Outlet />
-        </div>
-        {!isNarrow && <RightRail />}
+        <h2 style={{ marginBottom: '24px' }}>ShowMe</h2>
+
+        <nav
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '10px',
+          }}
+        >
+          <NavItem to="/u/me" label="My Profile" />
+          <NavItem to="/search" label="Profiles" />
+          <NavItem to="/feed" label="Feed" />
+          <NavItem to="/create" label="Create Post" />
+          <NavItem to="/messages" label="Messages" />
+          <NavItem to="/notifications" label="Notifications" />
+          <NavItem to="/settings" label="Settings" />
+        </nav>
+      </aside>
+
+      <main style={{ padding: '24px' }}>
+        <Outlet />
       </main>
     </div>
   )
