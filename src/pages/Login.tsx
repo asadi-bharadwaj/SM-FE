@@ -16,12 +16,15 @@ export default function Login() {
       body: JSON.stringify({ email, password }),
     });
 
-    if (res.ok) {
-      localStorage.setItem("token", "loggedin");
-      window.location.href = "/";
-    } else {
-      alert("Invalid Credentials");
-    }
+   if (res.ok) {
+  const data = await res.json()
+
+  localStorage.setItem("token", data.accessToken)
+  localStorage.setItem("refreshToken", data.refreshToken)
+  localStorage.setItem("userId", data.id)
+
+  window.location.href = "/u/me"
+}
   };
 
   return (
