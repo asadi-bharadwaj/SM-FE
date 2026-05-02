@@ -7,20 +7,13 @@ import { loadUsers } from './mocks/users'
 
 const root = createRoot(document.getElementById('root')!)
 
-loadUsers()
-  .then(() => {
-    root.render(
-      <StrictMode>
-        <App />
-      </StrictMode>
-    )
-  })
-  .catch((error) => {
-    console.error('Failed to load users:', error)
+root.render(
+  <StrictMode>
+    <App />
+  </StrictMode>
+)
 
-    root.render(
-      <StrictMode>
-        <App />
-      </StrictMode>
-    )
-  })
+// Load users after app starts
+loadUsers().catch((err) => {
+  console.error('Users load failed:', err)
+})
