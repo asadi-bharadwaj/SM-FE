@@ -8,38 +8,59 @@ export function ProfilePage() {
   const userId = localStorage.getItem("userId");
 
   const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (username === "me") {
-      fetch("http://localhost:8081/users/me", {
-        headers: {
-          "X-User-Id": userId || "",
-        },
-      })
-        .then((res) => res.json())
-        .then((data) => setUser(data));
-    }
-  }, []);
+    if (!username) return;
 
-  if (!username) return <NotFoundPage />;
-  if (username === "me" && !user) return <div>Loading...</div>;
-  if (username !== "me") return <NotFoundPage />;
+    const url =
+      username === "me"
+        ? "http://localhost:8081/users/me"
+        : "http://localhost:8081/users/all";
+
+    const options =
+      username === "me"
+        ? {
+            headers: {
+              "X-User-Id": userId || "",
+            },
+          }
+        : {};
+
+    fetch(url, options)
+      .then((res) => res.json())
+      .then((data) => {
+        if (username === "me") {
+          setUser(data);
+        } else {
+          const found = data.find(
+            (u: any) =>
+              u.username?.toLowerCase() === username.toLowerCase()
+          );
+          setUser(found || null);
+        }
+      })
+      .finally(() => setLoading(false));
+  }, [username]);
+
+  if (loading) return <div>Loading...</div>;
+  if (!user) return <NotFoundPage />;
 
   return (
     <ProfilePageView
       user={{
         id: String(user.id),
-        username: user.username || "me",
-        displayName: user.displayName,
+        username: user.username || "user",
+        displayName: user.displayName || user.username,
         avatarUrl:
           user.avatarUrl ||
-          "https://api.dicebear.com/7.x/avataaars/svg?seed=me",
+          `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.username}`,
         bio: user.bio || "",
         link: "",
         subscriberCount: 0,
       }}
       posts={[]}
-      isMe={true}
+      isMe={username === "me"}
     />
   );
 }

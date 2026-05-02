@@ -1,88 +1,123 @@
-import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-
-type User = {
-  id: number
-  authUserId: number
-  username: string
-  displayName: string
-  avatarUrl?: string
-  bio?: string
-}
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 export function SearchPage() {
-  const [users, setUsers] = useState<User[]>([])
-  const [query, setQuery] = useState('')
+  const [tab, setTab] = useState("feed");
+  const [query, setQuery] = useState("");
+  const [users, setUsers] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch('http://localhost:8081/users/all')
-      .then((res) => res.json())
-      .then((data) => setUsers(data))
-  }, [])
+    fetch("http://localhost:8081/users/all")
+      .then((r) => r.json())
+      .then((d) => setUsers(d));
+  }, []);
 
-  const filtered = users.filter((u) =>
-    `${u.username} ${u.displayName}`
-      .toLowerCase()
-      .includes(query.toLowerCase())
-  )
+  const filtered = users.filter((u) => {
+  const username = (u.username || "").toLowerCase();
+  const displayName = (u.displayName || "").toLowerCase();
+  const q = query.trim().toLowerCase();
+
+  return username.includes(q) || displayName.includes(q);
+});
 
   return (
-    <div style={{ maxWidth: 700, margin: '0 auto' }}>
-      <h2 style={{ marginBottom: 20 }}>Profiles</h2>
-
+    <div style={{ maxWidth: 760, margin: "0 auto" }}>
       <input
-        placeholder="Search users..."
+        placeholder="Search creators..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         style={{
-          width: '100%',
-          padding: '12px',
-          borderRadius: '10px',
-          marginBottom: '20px',
-          border: '1px solid #333',
-          background: '#111',
-          color: '#fff',
+          width: "100%",
+          padding: "14px",
+          borderRadius: "14px",
+          border: "1px solid #222",
+          background: "#111",
+          color: "#fff",
+          marginBottom: "20px",
         }}
       />
 
-      {filtered.map((u) => (
-        <Link
-          key={u.id}
-          to={`/u/${u.username}`}
+      <div style={{ display: "flex", gap: 12, marginBottom: 22 }}>
+        <button
+          onClick={() => setTab("feed")}
           style={{
-            display: 'flex',
-            gap: '14px',
-            padding: '14px',
-            border: '1px solid #222',
-            borderRadius: '12px',
-            marginBottom: '12px',
-            textDecoration: 'none',
-            color: '#fff',
+            padding: "10px 18px",
+            borderRadius: "10px",
+            background: tab === "feed" ? "#fff" : "#111",
+            color: tab === "feed" ? "#000" : "#fff",
           }}
         >
-          <img
-            src={
-              u.avatarUrl ||
-              `https://api.dicebear.com/7.x/avataaars/svg?seed=${u.username}`
-            }
-            width="48"
-            height="48"
-            style={{ borderRadius: '50%' }}
-          />
+          Feed
+        </button>
 
-          <div>
-            <div style={{ fontWeight: 700 }}>{u.displayName}</div>
-            <div style={{ color: '#aaa' }}>@{u.username}</div>
-            <div style={{ color: '#777', fontSize: 14 }}>
-              {u.bio || 'No bio yet'}
-            </div>
-          </div>
-        </Link>
-      ))}
+        <button
+          onClick={() => setTab("profiles")}
+          style={{
+            padding: "10px 18px",
+            borderRadius: "10px",
+            background: tab === "profiles" ? "#fff" : "#111",
+            color: tab === "profiles" ? "#000" : "#fff",
+          }}
+        >
+          Profiles
+        </button>
+      </div>
 
-      {filtered.length === 0 && (
-        <p style={{ color: '#777' }}>No users found</p>
+      {tab === "feed" && (
+  <div>
+    {query ? (
+      <div
+        style={{
+          padding: "20px",
+          border: "1px solid #222",
+          borderRadius: "14px",
+          color: "#aaa"
+        }}
+      >
+        No content found for "{query}" yet.
+      </div>
+    ) : (
+      <div
+        style={{
+          padding: "20px",
+          border: "1px solid #222",
+          borderRadius: "14px",
+          color: "#888"
+        }}
+      >
+        Feed content coming soon.
+      </div>
+    )}
+  </div>
+)}
+
+      {tab === "profiles" && (
+        <div>
+          {filtered.map((u) => (
+            <Link
+              key={u.id}
+              to={`/u/${u.username}`}
+              style={{
+                display: "flex",
+                gap: "12px",
+                padding: "14px",
+                borderBottom: "1px solid #222",
+                textDecoration: "none",
+                color: "#fff",
+              }}
+            >
+              <div>
+                <div style={{ fontWeight: 700 }}>
+                  {u.displayName}
+                </div>
+                <div style={{ color: "#888" }}>
+                  @{u.username}
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
       )}
     </div>
-  )
+  );
 }
