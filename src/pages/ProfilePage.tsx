@@ -1,14 +1,45 @@
-import { useParams } from 'react-router-dom'
-import { getUserByUsername, getPostsByAuthor, CURRENT_USER_ID } from '../mocks'
-import { ProfilePageView } from '../components/profile/ProfilePageView'
-import { NotFoundPage } from './NotFoundPage'
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { ProfilePageView } from "../components/profile/ProfilePageView";
+import { NotFoundPage } from "./NotFoundPage";
 
 export function ProfilePage() {
-  const { username } = useParams()
-  if (!username) return <NotFoundPage />
-  const u = getUserByUsername(username)
-  if (!u) return <NotFoundPage />
-  const posts = getPostsByAuthor(username)
-  const isMe = u.id === CURRENT_USER_ID
-  return <ProfilePageView user={u} posts={posts} isMe={isMe} />
+  const { username } = useParams();
+  const userId = localStorage.getItem("userId");
+
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    if (username === "me") {
+      fetch("http://localhost:8081/users/me", {
+        headers: {
+          "X-User-Id": userId || "",
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => setUser(data));
+    }
+  }, []);
+
+  if (!username) return <NotFoundPage />;
+  if (username === "me" && !user) return <div>Loading...</div>;
+  if (username !== "me") return <NotFoundPage />;
+
+  return (
+    <ProfilePageView
+      user={{
+        id: String(user.id),
+        username: user.username || "me",
+        displayName: user.displayName,
+        avatarUrl:
+          user.avatarUrl ||
+          "https://api.dicebear.com/7.x/avataaars/svg?seed=me",
+        bio: user.bio || "",
+        link: "",
+        subscriberCount: 0,
+      }}
+      posts={[]}
+      isMe={true}
+    />
+  );
 }
