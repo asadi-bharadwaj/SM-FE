@@ -1,72 +1,66 @@
-import { Outlet, Link, useLocation } from 'react-router-dom'
+import { Outlet, Link, useLocation } from "react-router-dom";
 
-function NavItem({
-  to,
-  label,
-}: {
-  to: string
-  label: string
-}) {
-  const { pathname } = useLocation()
+function Item({ to, label }: { to: string; label: string }) {
+  const { pathname } = useLocation();
 
-  const active = pathname === to || pathname.startsWith(to + '/')
+  const active =
+    pathname === to || pathname.startsWith(to + "/");
 
   return (
     <Link
       to={to}
       style={{
-        padding: '12px 14px',
-        borderRadius: '10px',
-        textDecoration: 'none',
-        color: '#fff',
-        background: active ? '#222' : 'transparent',
+        padding: "12px 16px",
+        borderRadius: "12px",
+        color: "#fff",
+        textDecoration: "none",
+        background: active ? "#1f1f1f" : "transparent",
         fontWeight: active ? 700 : 500,
+        transition: "0.2s",
       }}
     >
       {label}
     </Link>
-  )
+  );
 }
 
 export function AppLayout() {
   return (
     <div
       style={{
-        display: 'grid',
-        gridTemplateColumns: '240px 1fr',
-        minHeight: '100vh',
-        background: '#000',
-        color: '#fff',
+        display: "grid",
+        gridTemplateColumns: "220px 1fr",
+        minHeight: "100vh",
+        background: "#000",
+        color: "#fff",
       }}
     >
       <aside
         style={{
-          borderRight: '1px solid #222',
-          padding: '20px',
+          padding: "24px",
+          borderRight: "1px solid #222",
         }}
       >
-        <h2 style={{ marginBottom: '24px' }}>ShowMe</h2>
+        <h2 style={{ marginBottom: "28px" }}>ShowMe</h2>
 
-        <nav
+        <div
           style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '10px',
+            display: "flex",
+            flexDirection: "column",
+            gap: "10px",
           }}
         >
-          <NavItem to="/u/me" label="My Profile" />
-          <NavItem to="/search" label="Profiles" />
-          <NavItem to="/feed" label="Feed" />
-          <NavItem to="/create" label="Create Post" />
-          <NavItem to="/messages" label="Messages" />
-          <NavItem to="/notifications" label="Notifications" />
-          <NavItem to="/settings" label="Settings" />
-        </nav>
+          <Item to="/" label="Home" />
+          <Item to="/u/me" label="Profile" />
+          <Item to="/messages" label="Messages" />
+          <Item to="/notifications" label="Notifications" />
+          <Item to="/settings" label="Settings" />
+        </div>
       </aside>
 
-      <main style={{ padding: '24px' }}>
+      <main style={{ padding: "24px" }}>
         <Outlet />
       </main>
     </div>
-  )
+  );
 }
