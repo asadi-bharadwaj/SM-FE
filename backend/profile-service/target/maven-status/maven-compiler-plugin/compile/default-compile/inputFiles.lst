@@ -1,0 +1,13 @@
+/home/sai/Projects2/sm/SM-FE/backend/profile-service/src/main/java/com/sm/profile/ProfileApplication.java
+/home/sai/Projects2/sm/SM-FE/backend/profile-service/src/main/java/com/sm/profile/client/SocialServiceClient.java
+/home/sai/Projects2/sm/SM-FE/backend/profile-service/src/main/java/com/sm/profile/client/UserCountsDto.java
+/home/sai/Projects2/sm/SM-FE/backend/profile-service/src/main/java/com/sm/profile/config/ProfileDataLoader.java
+/home/sai/Projects2/sm/SM-FE/backend/profile-service/src/main/java/com/sm/profile/config/WebConfig.java
+/home/sai/Projects2/sm/SM-FE/backend/profile-service/src/main/java/com/sm/profile/domain/Profile.java
+/home/sai/Projects2/sm/SM-FE/backend/profile-service/src/main/java/com/sm/profile/domain/ProfileRepository.java
+/home/sai/Projects2/sm/SM-FE/backend/profile-service/src/main/java/com/sm/profile/web/InternalProfileController.java
+/home/sai/Projects2/sm/SM-FE/backend/profile-service/src/main/java/com/sm/profile/web/ProfileController.java
+/home/sai/Projects2/sm/SM-FE/backend/profile-service/src/main/java/com/sm/profile/web/ProfileService.java
+/home/sai/Projects2/sm/SM-FE/backend/profile-service/src/main/java/com/sm/profile/web/dto/ProvisionProfileRequest.java
+/home/sai/Projects2/sm/SM-FE/backend/profile-service/src/main/java/com/sm/profile/web/dto/PublicUserDto.java
+/home/sai/Projects2/sm/SM-FE/backend/profile-service/src/main/java/com/sm/profile/web/dto/UpdateProfileRequest.java

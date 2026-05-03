@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
-import { CURRENT_USER_ID } from '../mocks/users'
+import { getCurrentUserId } from '../lib/currentUser'
 import { useSubscriptionStore } from '../stores/subscriptionStore'
 import type { Post } from '../types'
 
 export function useIsPostLocked(
   post: Post,
-  viewerId: string = CURRENT_USER_ID,
+  viewerId: string = getCurrentUserId() ?? '',
 ): boolean {
   const isSubscribedToAuthor = useSubscriptionStore((s) =>
     s.isSubscribed(post.authorId),

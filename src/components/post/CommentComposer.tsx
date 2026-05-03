@@ -1,12 +1,13 @@
-import { useState } from 'react'
-import { usePostEngagement } from '../../hooks/usePostEngagement'
+import { forwardRef, useState } from 'react'
+import { usePostEngagement } from '../../context/PostEngagementContext'
 import styles from './CommentComposer.module.css'
 
 type Props = { postId: string; disabled?: boolean }
 
-export function CommentComposer({ postId, disabled }: Props) {
+export const CommentComposer = forwardRef<HTMLInputElement, Props>(
+  function CommentComposer({ postId, disabled }, ref) {
   const [t, setT] = useState('')
-  const { addComment } = usePostEngagement(postId)
+  const { addComment } = usePostEngagement()
   return (
     <form
       className={styles.form}
@@ -14,11 +15,13 @@ export function CommentComposer({ postId, disabled }: Props) {
         e.preventDefault()
         if (disabled) return
         if (!t.trim()) return
-        addComment(t)
-        setT('')
+        void addComment(t)
+          .then(() => setT(''))
+          .catch(() => {})
       }}
     >
       <input
+        ref={ref}
         className={styles.input}
         name="comment"
         placeholder="Add a comment…"
@@ -35,4 +38,5 @@ export function CommentComposer({ postId, disabled }: Props) {
       ) : null}
     </form>
   )
-}
+  },
+)

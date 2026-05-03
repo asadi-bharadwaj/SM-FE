@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { PROFILE_BASE, SOCIAL_BASE } from "../../config/apiBase";
 import styles from "./ProfileStats.module.css";
 
 type Props = {
   postCount: number;
-  userId?: string;
+  profileUserId?: string;
 };
 
 export function ProfileStats({
   postCount,
-  userId,
+  profileUserId,
 }: Props) {
   const [users, setUsers] = useState<any[]>([]);
   const [followers, setFollowers] = useState<any[]>([]);
@@ -22,22 +23,22 @@ export function ProfileStats({
     useState(false);
 
   useEffect(() => {
-    if (userId) loadAll();
-  }, [userId]);
+    if (profileUserId) loadAll();
+  }, [profileUserId]);
 
   const loadAll = async () => {
     try {
       const allUsers = await fetch(
-        "http://localhost:8081/users/all"
+        `${PROFILE_BASE}/users/all`
       ).then((r) => r.json());
 
       setUsers(allUsers);
 
       const subs = await fetch(
-        "http://localhost:8081/users/followers",
+        `${SOCIAL_BASE}/users/followers`,
         {
           headers: {
-            "X-User-Id": userId || "",
+            "X-User-Id": profileUserId || "",
           },
         }
       ).then((r) => r.json());
@@ -45,10 +46,10 @@ export function ProfileStats({
       setFollowers(Array.isArray(subs) ? subs : []);
 
       const followingRes = await fetch(
-        "http://localhost:8081/users/following",
+        `${SOCIAL_BASE}/users/following`,
         {
           headers: {
-            "X-User-Id": userId || "",
+            "X-User-Id": profileUserId || "",
           },
         }
       ).then((r) => r.json());

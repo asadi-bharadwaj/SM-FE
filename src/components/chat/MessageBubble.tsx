@@ -1,12 +1,12 @@
-import { CURRENT_USER_ID } from '../../mocks/users'
-import type { Message } from '../../types'
-import styles from './MessageBubble.module.css'
-import { timeAgo } from '../../lib/time'
+import type { Message } from "../../types";
+import styles from "./MessageBubble.module.css";
+import { timeAgo } from "../../lib/time";
+import { getCurrentUserId } from "../../lib/currentUser";
 
-type Props = { message: Message }
+type Props = { message: Message };
 
 export function MessageBubble({ message }: Props) {
-  const mine = message.senderId === CURRENT_USER_ID
+  const mine = message.senderId === getCurrentUserId();
   return (
     <li className={mine ? styles.mine : styles.them} aria-label="Message">
       <div className={styles.bubble}>
@@ -16,5 +16,5 @@ export function MessageBubble({ message }: Props) {
         </div>
       </div>
     </li>
-  )
+  );
 }

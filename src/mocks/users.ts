@@ -4,7 +4,9 @@ export const CURRENT_USER_ID = 'u-me'
 
 export let MOCK_USERS: PublicProfile[] = []
 
-const BASE_URL = 'http://localhost:8081'
+import { PROFILE_BASE } from '../config/apiBase'
+
+const BASE_URL = PROFILE_BASE
 
 function mapUser(u: any): PublicProfile {
   return {

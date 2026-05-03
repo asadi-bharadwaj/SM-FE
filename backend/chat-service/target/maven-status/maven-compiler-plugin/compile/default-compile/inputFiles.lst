@@ -1,0 +1,15 @@
+/home/sai/Projects2/sm/SM-FE/backend/chat-service/src/main/java/com/sm/chat/ChatApplication.java
+/home/sai/Projects2/sm/SM-FE/backend/chat-service/src/main/java/com/sm/chat/config/ChatDataLoader.java
+/home/sai/Projects2/sm/SM-FE/backend/chat-service/src/main/java/com/sm/chat/config/WebConfig.java
+/home/sai/Projects2/sm/SM-FE/backend/chat-service/src/main/java/com/sm/chat/domain/ChatMessageEntity.java
+/home/sai/Projects2/sm/SM-FE/backend/chat-service/src/main/java/com/sm/chat/domain/ChatMessageRepository.java
+/home/sai/Projects2/sm/SM-FE/backend/chat-service/src/main/java/com/sm/chat/domain/Conversation.java
+/home/sai/Projects2/sm/SM-FE/backend/chat-service/src/main/java/com/sm/chat/domain/ConversationRepository.java
+/home/sai/Projects2/sm/SM-FE/backend/chat-service/src/main/java/com/sm/chat/web/ChatMessagingService.java
+/home/sai/Projects2/sm/SM-FE/backend/chat-service/src/main/java/com/sm/chat/web/ChatRestController.java
+/home/sai/Projects2/sm/SM-FE/backend/chat-service/src/main/java/com/sm/chat/web/dto/ConversationSummaryDto.java
+/home/sai/Projects2/sm/SM-FE/backend/chat-service/src/main/java/com/sm/chat/web/dto/LastMessageDto.java
+/home/sai/Projects2/sm/SM-FE/backend/chat-service/src/main/java/com/sm/chat/web/dto/MessageDto.java
+/home/sai/Projects2/sm/SM-FE/backend/chat-service/src/main/java/com/sm/chat/web/dto/OpenConversationRequest.java
+/home/sai/Projects2/sm/SM-FE/backend/chat-service/src/main/java/com/sm/chat/web/dto/OpenConversationResponse.java
+/home/sai/Projects2/sm/SM-FE/backend/chat-service/src/main/java/com/sm/chat/web/dto/SendMessageRequest.java

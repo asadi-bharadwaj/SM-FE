@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { PROFILE_BASE } from "../config/apiBase";
 
 export function SearchPage() {
   const [tab, setTab] = useState("feed");
@@ -7,7 +8,7 @@ export function SearchPage() {
   const [users, setUsers] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch("http://localhost:8081/users/all")
+    fetch(`${PROFILE_BASE}/users/all`)
       .then((r) => r.json())
       .then((d) => setUsers(d))
       .catch((e) => console.error(e));

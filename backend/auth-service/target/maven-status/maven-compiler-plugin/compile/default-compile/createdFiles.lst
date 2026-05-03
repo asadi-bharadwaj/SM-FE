@@ -1,0 +1,13 @@
+com/sm/auth/client/ProfileProvisionRequest.class
+com/sm/auth/AuthApplication.class
+com/sm/auth/web/RegisterRequest.class
+com/sm/auth/web/AuthController.class
+com/sm/auth/config/WebConfig.class
+com/sm/auth/web/LoginResponse.class
+com/sm/auth/web/AuthService.class
+com/sm/auth/domain/User.class
+com/sm/auth/web/LoginRequest.class
+com/sm/auth/config/AuthDataLoader.class
+com/sm/auth/config/PasswordConfig.class
+com/sm/auth/client/ProfileProvisioningClient.class
+com/sm/auth/domain/UserRepository.class

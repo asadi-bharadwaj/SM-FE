@@ -8,14 +8,22 @@ import { PostPage } from '../pages/PostPage'
 import { NotificationsPage } from '../pages/NotificationsPage'
 import { CreatePostPage } from '../pages/CreatePostPage'
 import { SettingsPage } from '../pages/SettingsPage'
+import { EditProfilePage } from '../pages/EditProfilePage'
 import { NotFoundPage } from '../pages/NotFoundPage'
 import { PlaceholderPage } from '../pages/PlaceholderPage'
 
 import Login from '../pages/Login'
 import Register from '../pages/Register'
+import { MessagesLayout } from '../components/chat/MessagesLayout'
+import { MessagesInboxPage } from '../pages/MessagesInboxPage'
+import { MessageThreadPage } from '../pages/MessageThreadPage'
+
+/** Set to `true` to require a stored token for app routes (redirect to `/login` when missing). */
+const REQUIRE_LOGIN = true
 
 const isLoggedIn = () => {
-  return localStorage.getItem("token") !== null
+  if (!REQUIRE_LOGIN) return true
+  return localStorage.getItem('token') !== null
 }
 
 export const router = createBrowserRouter([
@@ -41,53 +49,20 @@ export const router = createBrowserRouter([
       { path: 'p/:postId', element: <PostPage /> },
 
       {
-  path: 'messages',
-  element: (
-    <div
-      style={{
-        minHeight: '70vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        color: '#fff',
-      }}
-    >
-      <div
-        style={{
-          textAlign: 'center',
-          maxWidth: '500px',
-        }}
-      >
-        <h1
-          style={{
-            fontSize: '42px',
-            marginBottom: '14px',
-            fontWeight: 800,
-          }}
-        >
-          Messages Coming Soon
-        </h1>
-
-        <p
-          style={{
-            color: '#8a8a8a',
-            fontSize: '16px',
-            lineHeight: 1.6,
-          }}
-        >
-          Private messaging is under development.
-          A premium chat experience is on the way.
-        </p>
-      </div>
-    </div>
-  ),
-},
+        path: 'messages',
+        element: <MessagesLayout />,
+        children: [
+          { index: true, element: <MessagesInboxPage /> },
+          { path: ':threadId', element: <MessageThreadPage /> },
+        ],
+      },
 
       { path: 'notifications', element: <NotificationsPage /> },
       { path: 'create', element: <CreatePostPage /> },
       { path: 'reels', element: <PlaceholderPage /> },
       { path: 'more', element: <PlaceholderPage /> },
       { path: 'settings', element: <SettingsPage /> },
+      { path: 'settings/profile', element: <EditProfilePage /> },
       { path: '*', element: <NotFoundPage /> },
     ],
   },

@@ -1,13 +1,6 @@
 import { create } from 'zustand'
 
-const USER_ID = 1
-const BASE_URL = 'http://localhost:8081'
-
-const creatorMap: Record<string, number> = {
-  u1: 101,
-  u2: 202,
-  u3: 303,
-}
+import { SOCIAL_BASE } from '../config/apiBase'
 
 type State = {
   subscribedAuthorIds: Set<string>
@@ -22,10 +15,9 @@ export const useSubscriptionStore = create<State>((set, get) => ({
     get().subscribedAuthorIds.has(authorId),
 
   toggleSubscribe: async (authorId) => {
-    const creatorId = creatorMap[authorId]
-
-    if (!creatorId) {
-      console.error('Creator mapping missing')
+    const viewerId = localStorage.getItem('userId')
+    if (!viewerId) {
+      alert('Sign in to subscribe')
       return
     }
 
@@ -33,11 +25,11 @@ export const useSubscriptionStore = create<State>((set, get) => ({
 
     try {
       const response = await fetch(
-        `${BASE_URL}/users/follow/${creatorId}`,
+        `${SOCIAL_BASE}/users/follow/${authorId}`,
         {
           method: already ? 'DELETE' : 'POST',
           headers: {
-            'X-User-Id': USER_ID.toString(),
+            'X-User-Id': viewerId,
           },
         }
       )

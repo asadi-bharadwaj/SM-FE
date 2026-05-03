@@ -37,16 +37,7 @@ export function ProfileHeader({
           </h2>
         </div>
 
-        <ProfileStats
-          profileUserId={user.id}
-          postCount={postCount}
-          subscriberCount={
-            user.subscriberCount || 0
-          }
-          followingCount={
-            user.followingCount || 0
-          }
-        />
+        <ProfileStats profileUserId={user.id} postCount={postCount} />
 
         <ProfileActions
           isMe={isMe}

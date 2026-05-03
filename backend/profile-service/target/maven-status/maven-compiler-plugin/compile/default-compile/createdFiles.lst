@@ -1,0 +1,13 @@
+com/sm/profile/web/dto/ProvisionProfileRequest.class
+com/sm/profile/ProfileApplication.class
+com/sm/profile/web/ProfileController.class
+com/sm/profile/client/SocialServiceClient.class
+com/sm/profile/client/UserCountsDto.class
+com/sm/profile/config/WebConfig.class
+com/sm/profile/config/ProfileDataLoader.class
+com/sm/profile/domain/ProfileRepository.class
+com/sm/profile/web/InternalProfileController.class
+com/sm/profile/web/dto/PublicUserDto.class
+com/sm/profile/web/dto/UpdateProfileRequest.class
+com/sm/profile/domain/Profile.class
+com/sm/profile/web/ProfileService.class

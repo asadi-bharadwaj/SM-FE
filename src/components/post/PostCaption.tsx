@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { UserLink } from '../common/UserLink'
-import { usePostEngagement } from '../../hooks/usePostEngagement'
+import { usePostEngagement } from '../../context/PostEngagementContext'
 import type { Post } from '../../types'
 import { cn } from '../../lib/cn'
 import styles from './PostCaption.module.css'
@@ -12,7 +12,7 @@ type Props = {
 }
 
 export function PostCaption({ post, showCommentCta, locked }: Props) {
-  const { comments } = usePostEngagement(post.id)
+  const { comments } = usePostEngagement()
   const [open, setOpen] = useState(false)
   const over100 = post.caption.length > 100
 

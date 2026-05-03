@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { openOrGetConversation } from "../../api/chatApi";
+import { SOCIAL_BASE } from "../../config/apiBase";
 import { ProfileHeader } from "./ProfileHeader";
 import { PostGrid } from "./PostGrid";
 import type { PublicProfile } from "../../types";
@@ -39,7 +41,7 @@ export function ProfilePageView({
         : "POST";
 
       const res = await fetch(
-        `http://localhost:8081/users/follow/${user.id}`,
+        `${SOCIAL_BASE}/users/follow/${user.id}`,
         {
           method,
           headers: {
@@ -69,8 +71,18 @@ export function ProfilePageView({
         isSubscribed={isSubscribed}
         onSubscribe={handleSubscribe}
         onMessage={
-          !isMe && isSubscribed
-            ? () => nav("/messages")
+          !isMe && isSubscribed && currentUserId
+            ? async () => {
+                try {
+                  const cid = await openOrGetConversation(
+                    currentUserId,
+                    user.id
+                  );
+                  nav(`/messages/${cid}`);
+                } catch {
+                  alert("Could not open chat. Is chat-service running?");
+                }
+              }
             : undefined
         }
       />

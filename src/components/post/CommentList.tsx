@@ -1,11 +1,11 @@
-import { usePostEngagement } from '../../hooks/usePostEngagement'
+import { usePostEngagement } from '../../context/PostEngagementContext'
 import { CommentItem } from './CommentItem'
 import styles from './CommentList.module.css'
 
 type Props = { postId: string; max?: number; locked?: boolean }
 
 export function CommentList({ postId, max, locked }: Props) {
-  const { comments } = usePostEngagement(postId)
+  const { comments } = usePostEngagement()
   if (locked) return null
   const list = max != null ? comments.slice(0, max) : comments
   if (list.length === 0) return null

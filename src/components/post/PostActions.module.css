@@ -16,6 +16,12 @@
   stroke: var(--color-danger);
 }
 
+.saved {
+  color: var(--color-accent);
+  stroke: var(--color-accent);
+  fill: var(--color-accent);
+}
+
 .muted {
   opacity: 0.4;
   pointer-events: none;

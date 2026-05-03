@@ -13,16 +13,22 @@ type Props = {
 export function PostMedia({ post, locked, onSubscribe, className }: Props) {
   return (
     <div className={cn(styles.frame, className)}>
-      {post.mediaType === 'image' ? (
+      {post.mediaType === "image" ? (
         <img
           className={cn(styles.media, locked && styles.blur)}
           src={post.mediaUrl}
           alt=""
         />
       ) : (
-        <div className={styles.videoPlaceholder}>Video</div>
+        <video
+          className={cn(styles.media, locked && styles.blur)}
+          src={post.mediaUrl}
+          controls
+          playsInline
+          preload="metadata"
+        />
       )}
       {locked ? <LockedPostOverlay onSubscribe={onSubscribe} /> : null}
     </div>
-  )
+  );
 }

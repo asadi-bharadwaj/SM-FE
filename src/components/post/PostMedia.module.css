@@ -20,11 +20,3 @@
   filter: blur(24px);
   transform: scale(1.05);
 }
-
-.videoPlaceholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  color: var(--color-text-muted);
-}

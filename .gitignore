@@ -9,6 +9,15 @@ lerna-debug.log*
 
 node_modules
 dist
+
+# Secrets & local env (never commit keys)
+.env
+.env.*
+!.env.example
+secrets/aws.env
+
+# Local uploads (content-service)
+**/data/uploads/
 dist-ssr
 *.local
 

@@ -1,4 +1,5 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
+import { logout } from "../lib/logout";
 
 function Item({ to, label }: { to: string; label: string }) {
   const { pathname } = useLocation();
@@ -166,6 +167,9 @@ export function AppLayout() {
             padding: "28px 22px",
             borderRight: "1px solid rgba(255,255,255,0.06)",
             backdropFilter: "blur(8px)",
+            display: "flex",
+            flexDirection: "column",
+            minHeight: "100vh",
           }}
         >
           <h2
@@ -184,13 +188,25 @@ export function AppLayout() {
               display: "flex",
               flexDirection: "column",
               gap: "6px",
+              flex: 1,
             }}
           >
             <Item to="/" label="Home" />
+            <Item to="/create" label="Create" />
             <Item to="/u/me" label="Profile" />
             <Item to="/messages" label="Messages" />
             <Item to="/notifications" label="Notifications" />
             <Item to="/settings" label="Settings" />
+          </div>
+
+          <div className="sidebar-logout">
+            <button
+              type="button"
+              className="sidebar-logout-btn"
+              onClick={() => logout()}
+            >
+              Log out
+            </button>
           </div>
         </aside>
 

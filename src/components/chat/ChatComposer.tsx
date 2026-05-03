@@ -2,16 +2,24 @@ import { useState, type FormEvent } from 'react'
 import { Send } from 'lucide-react'
 import styles from './ChatComposer.module.css'
 
-type Props = { onSend: (body: string) => void; disabled?: boolean }
+type Props = {
+  onSend: (body: string) => void | Promise<void>
+  disabled?: boolean
+}
 
 export function ChatComposer({ onSend, disabled }: Props) {
   const [t, setT] = useState('')
-  const submit = (e: FormEvent) => {
+  const submit = async (e: FormEvent) => {
     e.preventDefault()
     if (disabled) return
-    if (!t.trim()) return
-    onSend(t.trim())
+    const body = t.trim()
+    if (!body) return
     setT('')
+    try {
+      await Promise.resolve(onSend(body))
+    } catch {
+      setT(body)
+    }
   }
   return (
     <form className={styles.form} onSubmit={submit}>

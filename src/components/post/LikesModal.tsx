@@ -1,5 +1,7 @@
+import { useEffect, useState } from 'react'
 import { useLockBodyScroll } from '../../hooks/useLockBodyScroll'
-import { getMockLikersForPost } from '../../mocks/likesList'
+import { fetchPostLikers } from '../../api/engagementApi'
+import type { PublicProfile } from '../../types'
 import { Avatar } from '../common/Avatar'
 import { IconButton } from '../common/IconButton'
 import { X } from 'lucide-react'
@@ -14,7 +16,34 @@ type Props = {
 
 export function LikesModal({ postId, likeCount, onClose }: Props) {
   useLockBodyScroll(true)
-  const likers = getMockLikersForPost(postId, Math.min(likeCount, 20))
+  const [likers, setLikers] = useState<PublicProfile[]>([])
+  const [loadError, setLoadError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    let cancelled = false
+    setLoading(true)
+    setLoadError(null)
+    fetchPostLikers(postId)
+      .then((users) => {
+        if (!cancelled) {
+          setLikers(users)
+          setLoadError(null)
+        }
+      })
+      .catch((e: unknown) => {
+        if (!cancelled) {
+          setLikers([])
+          setLoadError(e instanceof Error ? e.message : 'Could not load likes.')
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [postId])
 
   return (
     <div
@@ -42,6 +71,14 @@ export function LikesModal({ postId, likeCount, onClose }: Props) {
             <X size={22} />
           </IconButton>
         </div>
+        {loadError ? (
+          <p className={styles.error} role="alert">
+            {loadError}
+          </p>
+        ) : null}
+        {loading ? (
+          <p className={styles.muted}>Loading…</p>
+        ) : null}
         <ul className={styles.list}>
           {likers.map((u) => (
             <li key={u.id} className={styles.row}>
@@ -55,6 +92,9 @@ export function LikesModal({ postId, likeCount, onClose }: Props) {
             </li>
           ))}
         </ul>
+        {!loading && !loadError && likeCount === 0 ? (
+          <p className={styles.muted}>No likes yet.</p>
+        ) : null}
       </div>
     </div>
   )

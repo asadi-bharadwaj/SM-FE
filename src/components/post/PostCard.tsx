@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useRef, useState, type RefObject } from 'react'
 import { Link } from 'react-router-dom'
+import { PostEngagementProvider, usePostEngagement } from '../../context/PostEngagementContext'
 import { useIsPostLocked } from '../../hooks/useIsPostLocked'
-import { usePostEngagement } from '../../hooks/usePostEngagement'
 import { useSubscriptionStore } from '../../stores/subscriptionStore'
 import type { Post } from '../../types'
 import { LikeCount } from './LikeCount'
@@ -19,23 +19,44 @@ type Props = {
 }
 
 export function PostCard({ post }: Props) {
-  const locked = useIsPostLocked(post)
-  const toggleSub = useSubscriptionStore((s) => s.toggleSubscribe)
-  const { likeCount } = usePostEngagement(post.id)
-  const [showLikes, setShowLikes] = useState(false)
-
+  const commentInputRef = useRef<HTMLInputElement>(null)
   return (
     <article className={styles.root}>
       <Link to={`/p/${post.id}`} className={styles.srOnly} tabIndex={-1}>
         View post
       </Link>
+      <PostEngagementProvider postId={post.id}>
+        <PostCardInner post={post} commentInputRef={commentInputRef} />
+      </PostEngagementProvider>
+    </article>
+  )
+}
+
+function PostCardInner({
+  post,
+  commentInputRef,
+}: {
+  post: Post
+  commentInputRef: RefObject<HTMLInputElement | null>
+}) {
+  const locked = useIsPostLocked(post)
+  const toggleSub = useSubscriptionStore((s) => s.toggleSubscribe)
+  const { likeCount } = usePostEngagement()
+  const [showLikes, setShowLikes] = useState(false)
+
+  return (
+    <>
       <PostHeader post={post} verified />
       <PostMedia
         post={post}
         locked={locked}
         onSubscribe={() => toggleSub(post.authorId)}
       />
-      <PostActions postId={post.id} disabled={locked} />
+      <PostActions
+        postId={post.id}
+        disabled={locked}
+        onOpenComments={() => commentInputRef.current?.focus()}
+      />
       <LikeCount
         count={likeCount}
         disabled={locked}
@@ -50,7 +71,7 @@ export function PostCard({ post }: Props) {
       )}
       <PostCaption post={post} locked={locked} showCommentCta />
       <CommentList postId={post.id} max={2} locked={locked} />
-      <CommentComposer postId={post.id} disabled={locked} />
-    </article>
+      <CommentComposer ref={commentInputRef} postId={post.id} disabled={locked} />
+    </>
   )
 }

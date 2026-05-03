@@ -1,14 +1,18 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { AUTH_BASE } from "../config/apiBase";
+import { formatApiErrorBody } from "../lib/apiError";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   const login = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError(null);
 
-    const res = await fetch("http://localhost:8081/auth/login", {
+    const res = await fetch(`${AUTH_BASE}/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -16,15 +20,22 @@ export default function Login() {
       body: JSON.stringify({ email, password }),
     });
 
-   if (res.ok) {
-  const data = await res.json()
+    if (!res.ok) {
+      const text = await res.text().catch(() => "");
+      setError(formatApiErrorBody(text, res.status));
+      return;
+    }
 
-  localStorage.setItem("token", data.accessToken)
-  localStorage.setItem("refreshToken", data.refreshToken)
-  localStorage.setItem("userId", data.id)
+    const data = await res.json();
 
-  window.location.href = "/u/me"
-}
+    localStorage.setItem("token", data.accessToken);
+    localStorage.setItem("refreshToken", data.refreshToken);
+    localStorage.setItem("userId", data.id);
+    if (typeof data.username === "string" && data.username) {
+      localStorage.setItem("profileUsername", data.username);
+    }
+
+    window.location.href = "/u/me";
   };
 
   return (
@@ -49,6 +60,12 @@ export default function Login() {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
+
+          {error ? (
+            <p className="auth-error" role="alert">
+              {error}
+            </p>
+          ) : null}
 
           <button type="submit">Login</button>
         </form>

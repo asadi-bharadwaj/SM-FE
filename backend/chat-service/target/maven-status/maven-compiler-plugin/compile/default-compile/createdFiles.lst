@@ -1,0 +1,15 @@
+com/sm/chat/config/ChatDataLoader.class
+com/sm/chat/ChatApplication.class
+com/sm/chat/web/dto/SendMessageRequest.class
+com/sm/chat/domain/ChatMessageRepository.class
+com/sm/chat/domain/ChatMessageEntity.class
+com/sm/chat/web/dto/ConversationSummaryDto.class
+com/sm/chat/web/dto/OpenConversationRequest.class
+com/sm/chat/web/ChatRestController.class
+com/sm/chat/web/dto/OpenConversationResponse.class
+com/sm/chat/domain/ConversationRepository.class
+com/sm/chat/web/dto/LastMessageDto.class
+com/sm/chat/web/ChatMessagingService.class
+com/sm/chat/config/WebConfig.class
+com/sm/chat/web/dto/MessageDto.class
+com/sm/chat/domain/Conversation.class

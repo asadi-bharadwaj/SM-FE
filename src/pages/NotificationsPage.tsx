@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { SOCIAL_BASE } from "../config/apiBase";
 
 type NotificationItem = {
   id: number;
@@ -15,7 +16,7 @@ export function NotificationsPage() {
   useEffect(() => {
     if (!userId) return;
 
-    fetch("http://localhost:8081/users/following", {
+    fetch(`${SOCIAL_BASE}/users/following`, {
       headers: {
         "X-User-Id": userId,
       },

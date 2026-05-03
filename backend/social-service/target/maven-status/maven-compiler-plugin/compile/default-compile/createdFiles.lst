@@ -1,0 +1,10 @@
+com/sm/social/config/SocialDataLoader.class
+com/sm/social/web/SocialService.class
+com/sm/social/web/FollowerEntryDto.class
+com/sm/social/SocialApplication.class
+com/sm/social/web/SocialController.class
+com/sm/social/web/UserCountsDto.class
+com/sm/social/domain/FollowRepository.class
+com/sm/social/domain/Follow.class
+com/sm/social/config/WebConfig.class
+com/sm/social/web/FollowingEntryDto.class

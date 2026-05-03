@@ -1,0 +1,13 @@
+/home/sai/Projects2/sm/SM-FE/backend/auth-service/src/main/java/com/sm/auth/AuthApplication.java
+/home/sai/Projects2/sm/SM-FE/backend/auth-service/src/main/java/com/sm/auth/client/ProfileProvisionRequest.java
+/home/sai/Projects2/sm/SM-FE/backend/auth-service/src/main/java/com/sm/auth/client/ProfileProvisioningClient.java
+/home/sai/Projects2/sm/SM-FE/backend/auth-service/src/main/java/com/sm/auth/config/AuthDataLoader.java
+/home/sai/Projects2/sm/SM-FE/backend/auth-service/src/main/java/com/sm/auth/config/PasswordConfig.java
+/home/sai/Projects2/sm/SM-FE/backend/auth-service/src/main/java/com/sm/auth/config/WebConfig.java
+/home/sai/Projects2/sm/SM-FE/backend/auth-service/src/main/java/com/sm/auth/domain/User.java
+/home/sai/Projects2/sm/SM-FE/backend/auth-service/src/main/java/com/sm/auth/domain/UserRepository.java
+/home/sai/Projects2/sm/SM-FE/backend/auth-service/src/main/java/com/sm/auth/web/AuthController.java
+/home/sai/Projects2/sm/SM-FE/backend/auth-service/src/main/java/com/sm/auth/web/AuthService.java
+/home/sai/Projects2/sm/SM-FE/backend/auth-service/src/main/java/com/sm/auth/web/LoginRequest.java
+/home/sai/Projects2/sm/SM-FE/backend/auth-service/src/main/java/com/sm/auth/web/LoginResponse.java
+/home/sai/Projects2/sm/SM-FE/backend/auth-service/src/main/java/com/sm/auth/web/RegisterRequest.java
