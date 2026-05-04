@@ -25,7 +25,7 @@ export function ProfilePage() {
   }, [refreshCounter]);
 
   const getStableId = (u: any) =>
-    String(u?.id ?? u?.userId ?? u?.authUserId ?? "");
+    String(u?.authUserId ?? u?.id ?? u?.userId ?? "");
 
   const loadData = async () => {
     try {
