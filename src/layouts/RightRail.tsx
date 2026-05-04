@@ -1,13 +1,24 @@
+import { useEffect } from 'react'
 import { getUserById, searchUsers, CURRENT_USER_ID } from '../mocks/users'
 import { Avatar } from '../components/common/Avatar'
 import { ProfileResultRow } from '../components/search/ProfileResultRow'
 import styles from './RightRail.module.css'
 import { Link } from 'react-router-dom'
 import { Button } from '../components/common/Button'
+import { useSubscriptionStore } from '../stores/subscriptionStore'
 
 export function RightRail() {
-  const me = getUserById(CURRENT_USER_ID)
-  const suggestions = searchUsers('').filter((u) => u.id !== me?.id).slice(0, 3)
+  const currentUserId = localStorage.getItem('userId') || CURRENT_USER_ID
+  const me = getUserById(currentUserId)
+  const suggestions = searchUsers('').filter((u) => String(u.id) !== String(currentUserId)).slice(0, 3)
+  const loadSubscriptions = useSubscriptionStore((s) => s.loadSubscriptions)
+  const isLoaded = useSubscriptionStore((s) => s.isLoaded)
+
+  useEffect(() => {
+    if (!isLoaded) {
+      loadSubscriptions()
+    }
+  }, [isLoaded, loadSubscriptions])
 
   return (
     <aside className={styles.rail} aria-label="Account and suggestions">

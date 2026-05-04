@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ProfileHeader } from "./ProfileHeader";
 import { PostGrid } from "./PostGrid";
@@ -10,26 +10,64 @@ type Props = {
   user: PublicProfile;
   posts: Post[];
   isMe: boolean;
+  currentUserId?: string;
+  onSubscriptionChange?: () => void;
 };
 
 export function ProfilePageView({
   user,
   posts,
   isMe,
+  currentUserId,
+  onSubscriptionChange,
 }: Props) {
   const [tab, setTab] = useState<"posts" | "saved">("posts");
   const [isSubscribed, setIsSubscribed] =
     useState(false);
   const [loading, setLoading] =
     useState(false);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   const nav = useNavigate();
 
-  const currentUserId =
-    localStorage.getItem("userId");
+  const loggedInUserId =
+    currentUserId || localStorage.getItem("userId");
+
+  const actualIsMe =
+    isMe ||
+    String(loggedInUserId) === String(user.id);
+
+  // Load initial subscription status
+  useEffect(() => {
+    if (!actualIsMe && loggedInUserId && user.id) {
+      checkSubscriptionStatus();
+    }
+  }, [user.id, actualIsMe, loggedInUserId]);
+
+  const checkSubscriptionStatus = async () => {
+    try {
+      const following = await fetch(
+        "http://localhost:8081/users/following",
+        {
+          headers: {
+            "X-User-Id": loggedInUserId || "",
+          },
+        }
+      ).then((r) => r.json());
+
+      if (Array.isArray(following)) {
+        const isUserSubscribed = following.some(
+          (f: any) => String(f.creatorId) === String(user.id)
+        );
+        setIsSubscribed(isUserSubscribed);
+      }
+    } catch (e) {
+      console.log("Error checking subscription:", e);
+    }
+  };
 
   const handleSubscribe = async () => {
-    if (!currentUserId || isMe) return;
+    if (!loggedInUserId || actualIsMe) return;
 
     setLoading(true);
 
@@ -43,7 +81,7 @@ export function ProfilePageView({
         {
           method,
           headers: {
-            "X-User-Id": currentUserId,
+            "X-User-Id": loggedInUserId,
           },
         }
       );
@@ -53,6 +91,8 @@ export function ProfilePageView({
       }
 
       setIsSubscribed(!isSubscribed);
+      setRefreshTrigger(prev => prev + 1);
+      onSubscriptionChange?.();
     } catch (e) {
       alert("Subscription failed");
     } finally {
@@ -65,14 +105,16 @@ export function ProfilePageView({
       <ProfileHeader
         user={user}
         postCount={posts.length}
-        isMe={isMe}
+        isMe={actualIsMe}
         isSubscribed={isSubscribed}
         onSubscribe={handleSubscribe}
         onMessage={
-          !isMe && isSubscribed
+          !actualIsMe && isSubscribed
             ? () => nav("/messages")
             : undefined
         }
+        refreshTrigger={refreshTrigger}
+        currentUserId={currentUserId}
       />
 
       <p className={styles.display}>

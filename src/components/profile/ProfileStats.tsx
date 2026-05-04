@@ -5,15 +5,25 @@ import styles from "./ProfileStats.module.css";
 type Props = {
   postCount: number;
   userId?: string;
+  profileUserId?: string;
+  subscriberCount?: number;
+  followingCount?: number;
+  refreshTrigger?: number;
 };
 
 export function ProfileStats({
   postCount,
   userId,
+  profileUserId,
+  subscriberCount = 0,
+  followingCount = 0,
+  refreshTrigger,
 }: Props) {
   const [users, setUsers] = useState<any[]>([]);
   const [followers, setFollowers] = useState<any[]>([]);
   const [following, setFollowing] = useState<any[]>([]);
+  const [displaySubscriberCount, setDisplaySubscriberCount] = useState(subscriberCount);
+  const [displayFollowingCount, setDisplayFollowingCount] = useState(followingCount);
 
   const [showFollowers, setShowFollowers] =
     useState(false);
@@ -21,9 +31,19 @@ export function ProfileStats({
   const [showFollowing, setShowFollowing] =
     useState(false);
 
+  const effectiveUserId = profileUserId || userId || undefined;
+
   useEffect(() => {
-    if (userId) loadAll();
-  }, [userId]);
+    setDisplaySubscriberCount(subscriberCount);
+  }, [subscriberCount]);
+
+  useEffect(() => {
+    setDisplayFollowingCount(followingCount);
+  }, [followingCount]);
+
+  useEffect(() => {
+    if (effectiveUserId) loadAll();
+  }, [effectiveUserId, refreshTrigger]);
 
   const loadAll = async () => {
     try {
@@ -37,45 +57,71 @@ export function ProfileStats({
         "http://localhost:8081/users/followers",
         {
           headers: {
-            "X-User-Id": userId || "",
+            "X-User-Id": effectiveUserId || "",
           },
         }
       ).then((r) => r.json());
 
-      setFollowers(Array.isArray(subs) ? subs : []);
+      const subsArray = Array.isArray(subs) ? subs : [];
+      setFollowers(subsArray);
+      setDisplaySubscriberCount(subsArray.length);
 
       const followingRes = await fetch(
         "http://localhost:8081/users/following",
         {
           headers: {
-            "X-User-Id": userId || "",
+            "X-User-Id": effectiveUserId || "",
           },
         }
       ).then((r) => r.json());
 
-      setFollowing(
-        Array.isArray(followingRes)
-          ? followingRes
-          : []
-      );
+      const followingArray = Array.isArray(followingRes)
+        ? followingRes
+        : [];
+      setFollowing(followingArray);
+      setDisplayFollowingCount(followingArray.length);
     } catch (e) {
       console.log(e);
     }
   };
 
   const matchUser = (id: any) =>
-    users.find(
-      (u: any) =>
-        String(u.id) === String(id) ||
-        String(u.userId) === String(id)
-    );
+    users.find((u: any) => {
+      const candidate = String(id ?? "");
+      return (
+        String(u.id) === candidate ||
+        String(u.userId) === candidate ||
+        String(u.authUserId) === candidate
+      );
+    });
+
+  const makeProfile = (id: any, label: string) => {
+    const matched = matchUser(id)
+    if (matched) return matched
+    return {
+      id: `${label}-${id}`,
+      username: `${label}-${id}`,
+      displayName: `${label} ${id}`,
+      fallback: true,
+    }
+  }
 
   const followerProfiles = followers
-    .map((x) => matchUser(x.userId))
+    .map((x) =>
+      makeProfile(
+        x.userId ?? x.followerId ?? x.id ?? x.creatorId,
+        "Follower"
+      )
+    )
     .filter(Boolean);
 
   const followingProfiles = following
-    .map((x) => matchUser(x.creatorId))
+    .map((x) =>
+      makeProfile(
+        x.creatorId ?? x.userId ?? x.id,
+        "Creator"
+      )
+    )
     .filter(Boolean);
 
   return (
@@ -95,7 +141,7 @@ export function ProfileStats({
           }
         >
           <span className={styles.n}>
-            {followerProfiles.length}
+            {displaySubscriberCount}
           </span>{" "}
           subscribers
         </li>
@@ -107,7 +153,7 @@ export function ProfileStats({
           }
         >
           <span className={styles.n}>
-            {followingProfiles.length}
+            {displayFollowingCount}
           </span>{" "}
           subscriptions
         </li>
@@ -171,21 +217,36 @@ function Popup({
         )}
 
         {users.map((u: any) => (
-          <Link
-            key={u.id}
-            to={`/u/${u.username}`}
-            onClick={close}
-            style={{
-              display: "block",
-              padding: "12px 0",
-              color: "white",
-              textDecoration: "none",
-              borderBottom:
-                "1px solid rgba(255,255,255,.05)",
-            }}
-          >
-            @{u.username}
-          </Link>
+          u.fallback ? (
+            <div
+              key={u.id}
+              style={{
+                display: "block",
+                padding: "12px 0",
+                color: "white",
+                borderBottom:
+                  "1px solid rgba(255,255,255,.05)",
+              }}
+            >
+              {u.displayName}
+            </div>
+          ) : (
+            <Link
+              key={u.id}
+              to={`/u/${u.username}`}
+              onClick={close}
+              style={{
+                display: "block",
+                padding: "12px 0",
+                color: "white",
+                textDecoration: "none",
+                borderBottom:
+                  "1px solid rgba(255,255,255,.05)",
+              }}
+            >
+              @{u.username}
+            </Link>
+          )
         ))}
       </div>
     </div>

@@ -11,22 +11,33 @@ export function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [subscriberCount, setSubscriberCount] = useState(0);
   const [subscriptionCount, setSubscriptionCount] = useState(0);
+  const [refreshCounter, setRefreshCounter] = useState(0);
 
   useEffect(() => {
     loadData();
   }, [username]);
 
+  useEffect(() => {
+    // Refresh counts whenever subscription changes
+    if (user) {
+      refreshCounts();
+    }
+  }, [refreshCounter]);
+
   const getStableId = (u: any) =>
-    String(u?.id ?? u?.userId ?? "");
+    String(u?.id ?? u?.userId ?? u?.authUserId ?? "");
 
   const loadData = async () => {
     try {
       let profileUser: any = null;
+      let profileId = "";
 
       if (username === "me") {
         profileUser = await fetch("http://localhost:8081/users/me", {
           headers: { "X-User-Id": currentUserId || "" },
         }).then((r) => r.json());
+
+        profileId = currentUserId || getStableId(profileUser);
       } else {
         const users = await fetch("http://localhost:8081/users/all").then((r) =>
           r.json()
@@ -37,6 +48,8 @@ export function ProfilePage() {
             String(u.username || "").toLowerCase() ===
             String(username || "").toLowerCase()
         );
+
+        profileId = getStableId(profileUser);
       }
 
       if (!profileUser) {
@@ -45,8 +58,6 @@ export function ProfilePage() {
       }
 
       setUser(profileUser);
-
-      const profileId = getStableId(profileUser);
 
       const followers = await fetch(
         "http://localhost:8081/users/followers",
@@ -72,10 +83,45 @@ export function ProfilePage() {
     setLoading(false);
   };
 
+  const refreshCounts = async () => {
+    if (!user) return;
+
+    const profileId = username === "me" ? currentUserId || getStableId(user) : getStableId(user);
+
+    try {
+      const followers = await fetch(
+        "http://localhost:8081/users/followers",
+        {
+          headers: { "X-User-Id": profileId },
+        }
+      ).then((r) => r.json());
+
+      setSubscriberCount(Array.isArray(followers) ? followers.length : 0);
+
+      const following = await fetch(
+        "http://localhost:8081/users/following",
+        {
+          headers: { "X-User-Id": profileId },
+        }
+      ).then((r) => r.json());
+
+      setSubscriptionCount(Array.isArray(following) ? following.length : 0);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleSubscriptionChange = () => {
+    setRefreshCounter(prev => prev + 1);
+  };
+
   if (loading) return <div>Loading...</div>;
   if (!user) return <NotFoundPage />;
 
   const stableId = getStableId(user);
+  const isCurrentUser =
+    username === "me" ||
+    String(currentUserId) === String(stableId);
 
   return (
     <ProfilePageView
@@ -90,9 +136,12 @@ export function ProfilePage() {
         link: "",
         subscriberCount,
         subscriptionCount,
+        followingCount: subscriptionCount,
       }}
       posts={[]}
-      isMe={username === "me"}
+      isMe={isCurrentUser}
+      onSubscriptionChange={handleSubscriptionChange}
+      currentUserId={currentUserId || undefined}
     />
   );
 }

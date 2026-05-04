@@ -6,6 +6,8 @@ export type PublicProfile = {
   bio: string
   link?: string
   subscriberCount?: number
+  subscriptionCount?: number
+  followingCount?: number
 }
 
 export type User = PublicProfile & {
