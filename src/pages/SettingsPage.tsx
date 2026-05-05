@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { AvatarUpload } from "../components/settings/AvatarUpload";
 
 export function SettingsPage() {
   const userId = localStorage.getItem("userId");
@@ -46,36 +47,124 @@ export function SettingsPage() {
     }
   };
 
+  const handleAvatarChange = (avatarUrl: string) => {
+    setForm(prev => ({ ...prev, avatarUrl }));
+  };
+
   return (
-    <div style={{ maxWidth: 500, margin: "auto", padding: 20 }}>
-      <h2>Edit Profile</h2>
+    <div style={{
+      maxWidth: 500,
+      margin: "auto",
+      padding: 20,
+      minHeight: "100vh",
+      display: "flex",
+      flexDirection: "column",
+      gap: 20
+    }}>
+      <h2 style={{
+        textAlign: "center",
+        color: "white",
+        marginBottom: 20,
+        fontSize: "2rem",
+        fontWeight: 700
+      }}>
+        Edit Profile
+      </h2>
 
-      <input placeholder="Display Name"
-        value={form.displayName}
-        onChange={(e)=>setForm({...form, displayName:e.target.value})}
+      <AvatarUpload
+        currentAvatarUrl={form.avatarUrl}
+        onAvatarChange={handleAvatarChange}
       />
 
-      <input placeholder="Bio"
-        value={form.bio}
-        onChange={(e)=>setForm({...form, bio:e.target.value})}
-      />
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        <input placeholder="Display Name"
+          value={form.displayName}
+          onChange={(e)=>setForm({...form, displayName:e.target.value})}
+          style={{
+            padding: "14px 16px",
+            background: "rgba(25, 25, 25, 0.9)",
+            border: "1px solid rgba(255, 255, 255, 0.08)",
+            borderRadius: "12px",
+            color: "white",
+            fontSize: "0.95rem",
+            transition: "all 0.3s ease"
+          }}
+        />
 
-      <input placeholder="Country"
-        value={form.country}
-        onChange={(e)=>setForm({...form, country:e.target.value})}
-      />
+        <textarea
+          placeholder="Bio"
+          value={form.bio}
+          onChange={(e)=>setForm({...form, bio:e.target.value})}
+          rows={3}
+          style={{
+            padding: "14px 16px",
+            background: "rgba(25, 25, 25, 0.9)",
+            border: "1px solid rgba(255, 255, 255, 0.08)",
+            borderRadius: "12px",
+            color: "white",
+            fontSize: "0.95rem",
+            resize: "vertical",
+            minHeight: "80px",
+            transition: "all 0.3s ease"
+          }}
+        />
 
-      <input placeholder="Language"
-        value={form.language}
-        onChange={(e)=>setForm({...form, language:e.target.value})}
-      />
+        <input placeholder="Country"
+          value={form.country}
+          onChange={(e)=>setForm({...form, country:e.target.value})}
+          style={{
+            padding: "14px 16px",
+            background: "rgba(25, 25, 25, 0.9)",
+            border: "1px solid rgba(255, 255, 255, 0.08)",
+            borderRadius: "12px",
+            color: "white",
+            fontSize: "0.95rem",
+            transition: "all 0.3s ease"
+          }}
+        />
 
-      <input placeholder="Avatar URL"
-        value={form.avatarUrl}
-        onChange={(e)=>setForm({...form, avatarUrl:e.target.value})}
-      />
+        <input placeholder="Language"
+          value={form.language}
+          onChange={(e)=>setForm({...form, language:e.target.value})}
+          style={{
+            padding: "14px 16px",
+            background: "rgba(25, 25, 25, 0.9)",
+            border: "1px solid rgba(255, 255, 255, 0.08)",
+            borderRadius: "12px",
+            color: "white",
+            fontSize: "0.95rem",
+            transition: "all 0.3s ease"
+          }}
+        />
 
-      <button onClick={save}>Save Profile</button>
+        <button
+          onClick={save}
+          style={{
+            padding: "16px 20px",
+            background: "linear-gradient(135deg, rgba(59, 130, 246, 0.8) 0%, rgba(6, 182, 212, 0.8) 100%)",
+            border: "none",
+            borderRadius: "12px",
+            color: "white",
+            fontSize: "0.95rem",
+            fontWeight: 600,
+            cursor: "pointer",
+            transition: "all 0.3s ease",
+            marginTop: "8px",
+            textTransform: "uppercase",
+            letterSpacing: "0.025em"
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = "translateY(-2px)";
+            e.currentTarget.style.boxShadow = "0 8px 25px rgba(59, 130, 246, 0.4)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = "translateY(0)";
+            e.currentTarget.style.boxShadow = "none";
+          }}
+        >
+          Save Profile
+        </button>
+      </div>
     </div>
   );
 }
