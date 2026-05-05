@@ -29,33 +29,50 @@ export default function Login() {
 
   return (
     <div className="auth-page">
-      <div className="auth-card">
-        <h1>Welcome Back</h1>
-        <p>Login to continue</p>
+      <div className="auth-grid">
+        <section className="auth-left">
+          <div className="auth-art">
+            <span className="auth-badge">#SocialCanvas</span>
+            <h2>Build community.<br />Create with confidence.</h2>
+            <p>
+              A modern platform for creators, fans, and curators. Share your story,
+              connect with fellow members, and grow a meaningful social experience
+              with fresh style.
+            </p>
+          </div>
+          <div className="auth-ornament auth-ornament-1" />
+          <div className="auth-ornament auth-ornament-2" />
+          <div className="auth-ornament auth-ornament-3" />
+        </section>
 
-        <form onSubmit={login}>
-          <input
-            type="email"
-            placeholder="Email address"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
+        <main className="auth-card">
+          <h1>Welcome Back</h1>
+          <p>Login to continue</p>
 
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+          <form onSubmit={login}>
+            <input
+              type="email"
+              placeholder="Email address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
 
-          <button type="submit">Login</button>
-        </form>
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
 
-        <span>
-          New here? <Link to="/register">Create account</Link>
-        </span>
+            <button type="submit">Login</button>
+          </form>
+
+          <span>
+            New here? <Link to="/register">Create account</Link>
+          </span>
+        </main>
       </div>
     </div>
   );
