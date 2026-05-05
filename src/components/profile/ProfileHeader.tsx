@@ -11,6 +11,8 @@ type Props = {
   isSubscribed: boolean;
   onSubscribe: () => void;
   onMessage?: () => void;
+  refreshTrigger?: number;
+  currentUserId?: string;
 };
 
 export function ProfileHeader({
@@ -20,6 +22,8 @@ export function ProfileHeader({
   isSubscribed,
   onSubscribe,
   onMessage,
+  refreshTrigger,
+  currentUserId,
 }: Props) {
   return (
     <div className={styles.row}>
@@ -39,13 +43,15 @@ export function ProfileHeader({
 
         <ProfileStats
           profileUserId={user.id}
+          userId={currentUserId}
           postCount={postCount}
           subscriberCount={
             user.subscriberCount || 0
           }
           followingCount={
-            user.followingCount || 0
+            user.subscriptionCount ?? user.followingCount ?? 0
           }
+          refreshTrigger={refreshTrigger}
         />
 
         <ProfileActions
