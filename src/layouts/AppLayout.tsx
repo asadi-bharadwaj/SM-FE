@@ -151,14 +151,40 @@ export function AppLayout() {
         `}
       </style>
 
+      {/* Minimalist Background Effects */}
+      <div className="minimalist-canvas">
+        {/* Floating shapes */}
+        <div className="floating-shape" style={{ top: '10%', left: '10%' }} />
+        <div className="floating-shape" style={{ top: '20%', left: '60%' }} />
+        <div className="floating-shape" style={{ top: '60%', left: '20%' }} />
+        <div className="floating-shape" style={{ top: '80%', left: '70%' }} />
+        <div className="floating-shape" style={{ top: '30%', left: '80%' }} />
+
+        {/* Particle dots */}
+        <div className="particle-dots">
+          {Array.from({ length: 35 }, (_, i) => (
+            <div
+              key={i}
+              className="particle-dot"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animationDelay: `${i * 0.15}s`
+              }}
+            />
+          ))}
+        </div>
+      </div>
+
       <div
         style={{
           display: "grid",
           gridTemplateColumns: "220px 1fr",
           minHeight: "100vh",
-          background:
-            "radial-gradient(circle at top left, #0d0d0d, #000 40%)",
+          background: "transparent",
           color: "#fff",
+          position: "relative",
+          zIndex: 1,
         }}
       >
         <aside

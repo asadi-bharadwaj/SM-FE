@@ -1,3 +1,6 @@
+@import './styles/minimalist-effects.css';
+@import './styles/minimalist-form.css';
+
 * {
   margin: 0;
   padding: 0;

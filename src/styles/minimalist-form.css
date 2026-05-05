@@ -1,0 +1,344 @@
+/* Minimalist Futuristic Form Styling */
+.quantum-form-container {
+  position: relative;
+  z-index: 10;
+  max-width: 420px;
+  width: 100%;
+  padding: 40px;
+  background: rgba(15, 15, 15, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  backdrop-filter: blur(20px);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+}
+
+.quantum-form-container::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
+  background: linear-gradient(135deg,
+    var(--accent-blue),
+    var(--accent-cyan),
+    var(--accent-purple),
+    var(--accent-blue)
+  );
+  border-radius: 18px;
+  z-index: -1;
+  opacity: 0.2;
+  animation: subtle-border-glow 8s infinite ease-in-out;
+}
+
+@keyframes subtle-border-glow {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 0.4; }
+}
+
+.quantum-form-header {
+  text-align: center;
+  margin-bottom: 32px;
+  position: relative;
+}
+
+.quantum-form-header h1 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  letter-spacing: -0.02em;
+  position: relative;
+}
+
+.quantum-form-header h1::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan));
+  border-radius: 1px;
+  animation: line-grow 2s ease-out;
+}
+
+@keyframes line-grow {
+  0% { width: 0; }
+  100% { width: 40px; }
+}
+
+.quantum-subtitle {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+.quantum-error {
+  position: relative;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  color: #ef4444;
+  font-weight: 500;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.quantum-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.quantum-field-wrapper {
+  position: relative;
+  animation: field-slide-in 0.5s ease-out forwards;
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.quantum-field-wrapper:nth-child(1) { animation-delay: 0.1s; }
+.quantum-field-wrapper:nth-child(2) { animation-delay: 0.2s; }
+.quantum-field-wrapper:nth-child(3) { animation-delay: 0.3s; }
+.quantum-field-wrapper:nth-child(4) { animation-delay: 0.4s; }
+
+@keyframes field-slide-in {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.quantum-input-container {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.quantum-input-container.focused {
+  transform: translateY(-1px);
+}
+
+.quantum-input {
+  width: 100%;
+  padding: 16px 18px;
+  background: rgba(25, 25, 25, 0.9);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-weight: 400;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 2;
+}
+
+.quantum-input:focus {
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 3px var(--glow-color);
+  outline: none;
+}
+
+.quantum-input::placeholder {
+  color: var(--text-secondary);
+  transition: color 0.3s ease;
+}
+
+.quantum-input:focus::placeholder {
+  color: rgba(161, 161, 170, 0.6);
+}
+
+.quantum-button {
+  position: relative;
+  width: 100%;
+  padding: 16px 20px;
+  background: linear-gradient(135deg,
+    rgba(59, 130, 246, 0.8) 0%,
+    rgba(6, 182, 212, 0.8) 100%
+  );
+  border: none;
+  border-radius: 12px;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  overflow: hidden;
+}
+
+.quantum-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg,
+    rgba(59, 130, 246, 0.6) 0%,
+    rgba(6, 182, 212, 0.6) 100%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.quantum-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+}
+
+.quantum-button:hover::before {
+  opacity: 1;
+}
+
+/* Shining stars effect on hover */
+.quantum-button:hover::after {
+  content: '✨';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.5rem;
+  opacity: 0;
+  animation: stars-shine 1.5s ease-out infinite;
+  pointer-events: none;
+}
+
+@keyframes stars-shine {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5) rotate(0deg);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) rotate(90deg);
+  }
+  40% {
+    opacity: 0.8;
+    transform: translate(-50%, -50%) scale(1.2) rotate(180deg);
+  }
+  60% {
+    opacity: 0.6;
+    transform: translate(-50%, -50%) scale(0.8) rotate(270deg);
+  }
+  80% {
+    opacity: 0.4;
+    transform: translate(-50%, -50%) scale(1.1) rotate(360deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5) rotate(450deg);
+  }
+}
+
+/* Additional star particles */
+.quantum-button:hover {
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.8) 1px, transparent 1px),
+    radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.6) 1px, transparent 1px),
+    radial-gradient(circle at 40% 60%, rgba(255, 255, 255, 0.7) 1px, transparent 1px),
+    radial-gradient(circle at 60% 30%, rgba(255, 255, 255, 0.5) 1px, transparent 1px);
+  background-size: 20px 20px, 15px 15px, 25px 25px, 18px 18px;
+  background-position: 20% 20%, 80% 80%, 40% 60%, 60% 30%;
+  background-repeat: no-repeat;
+  animation: stars-twinkle 2s ease-in-out infinite;
+}
+
+@keyframes stars-twinkle {
+  0%, 100% {
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.8) 1px, transparent 1px),
+      radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.6) 1px, transparent 1px),
+      radial-gradient(circle at 40% 60%, rgba(255, 255, 255, 0.7) 1px, transparent 1px),
+      radial-gradient(circle at 60% 30%, rgba(255, 255, 255, 0.5) 1px, transparent 1px);
+  }
+  50% {
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.4) 1px, transparent 1px),
+      radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.9) 1px, transparent 1px),
+      radial-gradient(circle at 40% 60%, rgba(255, 255, 255, 0.3) 1px, transparent 1px),
+      radial-gradient(circle at 60% 30%, rgba(255, 255, 255, 0.8) 1px, transparent 1px);
+  }
+}
+
+.button-text {
+  position: relative;
+  z-index: 2;
+}
+
+.quantum-footer {
+  margin-top: 24px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.quantum-footer a {
+  color: var(--accent-cyan);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.quantum-footer a:hover {
+  color: var(--accent-blue);
+  text-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .quantum-form-container {
+    padding: 32px 24px;
+    margin: 16px;
+    border-radius: 14px;
+  }
+
+  .quantum-form-header h1 {
+    font-size: 1.9rem;
+  }
+
+  .quantum-input {
+    padding: 14px 16px;
+    font-size: 0.9rem;
+  }
+
+  .quantum-button {
+    padding: 14px 18px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  .quantum-field-wrapper,
+  .quantum-button,
+  .quantum-form-container,
+  .quantum-form-header h1::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .quantum-form-container {
+    border: 2px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .quantum-input {
+    border: 2px solid var(--border-color);
+  }
+
+  .quantum-input:focus {
+    border-color: var(--accent-blue);
+  }
+}

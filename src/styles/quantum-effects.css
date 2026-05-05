@@ -1,0 +1,379 @@
+/* Futuristic Auth Effects - Quantum Canvas */
+:root {
+  --quantum-primary: #ff0080;
+  --quantum-secondary: #00ffff;
+  --quantum-tertiary: #8000ff;
+  --quantum-accent: #ff8000;
+  --void-dark: #0a0a0f;
+  --void-darker: #050507;
+  --energy-glow: rgba(255, 0, 128, 0.3);
+  --plasma-blue: rgba(0, 255, 255, 0.25);
+  --neon-purple: rgba(128, 0, 255, 0.35);
+  --fire-orange: rgba(255, 128, 0, 0.28);
+}
+
+.quantum-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  z-index: -1;
+  background: radial-gradient(circle at 20% 30%, var(--energy-glow) 0%, transparent 50%),
+              radial-gradient(circle at 80% 70%, var(--plasma-blue) 0%, transparent 45%),
+              radial-gradient(circle at 40% 80%, var(--neon-purple) 0%, transparent 40%),
+              radial-gradient(circle at 60% 20%, var(--fire-orange) 0%, transparent 35%),
+              linear-gradient(135deg, var(--void-dark) 0%, var(--void-darker) 100%);
+}
+
+.quantum-particles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: var(--quantum-primary);
+  border-radius: 50%;
+  animation: quantum-float 8s infinite linear;
+  box-shadow: 0 0 12px var(--quantum-primary);
+}
+
+.particle:nth-child(2n) {
+  background: var(--quantum-secondary);
+  box-shadow: 0 0 12px var(--quantum-secondary);
+  animation-duration: 6s;
+  animation-delay: -2s;
+}
+
+.particle:nth-child(3n) {
+  background: var(--quantum-tertiary);
+  box-shadow: 0 0 12px var(--quantum-tertiary);
+  animation-duration: 10s;
+  animation-delay: -4s;
+}
+
+.particle:nth-child(5n) {
+  background: var(--quantum-accent);
+  box-shadow: 0 0 12px var(--quantum-accent);
+  animation-duration: 7s;
+  animation-delay: -1s;
+}
+
+@keyframes quantum-float {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.8;
+  }
+  25% {
+    transform: translate(100px, -50px) scale(1.2);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translate(-80px, 120px) scale(0.8);
+    opacity: 0.9;
+  }
+  75% {
+    transform: translate(150px, 80px) scale(1.1);
+    opacity: 0.4;
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.8;
+  }
+}
+
+.liquid-morph {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  background: linear-gradient(45deg, var(--quantum-primary), var(--quantum-secondary));
+  border-radius: 50% 40% 60% 45%;
+  animation: liquid-flow 6s infinite ease-in-out;
+  filter: blur(1px);
+  opacity: 0.6;
+}
+
+.liquid-morph:nth-child(2) {
+  width: 250px;
+  height: 250px;
+  background: linear-gradient(135deg, var(--quantum-tertiary), var(--quantum-accent));
+  border-radius: 60% 50% 40% 55%;
+  animation-duration: 8s;
+  animation-delay: -2s;
+  top: 20%;
+  left: 60%;
+}
+
+.liquid-morph:nth-child(3) {
+  width: 200px;
+  height: 200px;
+  background: linear-gradient(225deg, var(--quantum-secondary), var(--quantum-tertiary));
+  border-radius: 45% 55% 65% 35%;
+  animation-duration: 7s;
+  animation-delay: -4s;
+  top: 60%;
+  left: 20%;
+}
+
+@keyframes liquid-flow {
+  0%, 100% {
+    border-radius: 50% 40% 60% 45%;
+    transform: scale(1) rotate(0deg);
+  }
+  25% {
+    border-radius: 60% 50% 40% 55%;
+    transform: scale(1.1) rotate(90deg);
+  }
+  50% {
+    border-radius: 45% 55% 65% 35%;
+    transform: scale(0.9) rotate(180deg);
+  }
+  75% {
+    border-radius: 55% 45% 50% 60%;
+    transform: scale(1.05) rotate(270deg);
+  }
+}
+
+.hologram-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    linear-gradient(rgba(255, 0, 128, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: grid-shift 20s infinite linear;
+  opacity: 0.3;
+}
+
+@keyframes grid-shift {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(50px, 50px); }
+}
+
+.neural-network {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.neural-node {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: var(--quantum-primary);
+  border-radius: 50%;
+  animation: neural-pulse 3s infinite ease-in-out;
+}
+
+.neural-node:nth-child(2n) {
+  background: var(--quantum-secondary);
+  animation-delay: -1s;
+}
+
+.neural-node:nth-child(3n) {
+  background: var(--quantum-tertiary);
+  animation-delay: -2s;
+}
+
+@keyframes neural-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 1;
+  }
+}
+
+.neural-connection {
+  position: absolute;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--quantum-primary), transparent);
+  animation: connection-flow 4s infinite linear;
+  opacity: 0.6;
+}
+
+.neural-connection:nth-child(2n) {
+  background: linear-gradient(90deg, transparent, var(--quantum-secondary), transparent);
+  animation-duration: 5s;
+}
+
+.neural-connection:nth-child(3n) {
+  background: linear-gradient(90deg, transparent, var(--quantum-tertiary), transparent);
+  animation-duration: 6s;
+}
+
+@keyframes connection-flow {
+  0% { width: 0; opacity: 0; }
+  10% { opacity: 0.6; }
+  90% { opacity: 0.6; }
+  100% { width: 100px; opacity: 0; }
+}
+
+.quantum-field {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 50% 50%, transparent 0%, rgba(255, 0, 128, 0.05) 50%, transparent 100%);
+  animation: field-ripple 8s infinite ease-in-out;
+}
+
+@keyframes field-ripple {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.6;
+  }
+}
+
+.morphing-typography {
+  position: relative;
+  overflow: hidden;
+}
+
+.morphing-typography::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  animation: text-shimmer 3s infinite;
+}
+
+@keyframes text-shimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+.glass-morphism {
+  backdrop-filter: blur(20px);
+  background: rgba(10, 10, 15, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.quantum-button {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(45deg, var(--quantum-primary), var(--quantum-secondary));
+  border: none;
+  color: white;
+  font-weight: 700;
+  transition: all 0.3s ease;
+}
+
+.quantum-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.quantum-button:hover::before {
+  left: 100%;
+}
+
+.quantum-input {
+  position: relative;
+  background: rgba(20, 20, 25, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.quantum-input:focus {
+  border-color: var(--quantum-primary);
+  box-shadow:
+    0 0 20px rgba(255, 0, 128, 0.3),
+    inset 0 0 20px rgba(255, 0, 128, 0.1);
+}
+
+.quantum-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+  transition: color 0.3s ease;
+}
+
+.quantum-input:focus::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.energy-orb {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: radial-gradient(circle, var(--quantum-primary), transparent);
+  border-radius: 50%;
+  animation: orb-orbit 6s infinite linear;
+  pointer-events: none;
+}
+
+.energy-orb:nth-child(2) {
+  animation-duration: 8s;
+  animation-delay: -2s;
+  background: radial-gradient(circle, var(--quantum-secondary), transparent);
+}
+
+.energy-orb:nth-child(3) {
+  animation-duration: 10s;
+  animation-delay: -4s;
+  background: radial-gradient(circle, var(--quantum-tertiary), transparent);
+}
+
+@keyframes orb-orbit {
+  0% { transform: rotate(0deg) translateX(100px) rotate(0deg); }
+  100% { transform: rotate(360deg) translateX(100px) rotate(-360deg); }
+}
+
+.fractal-pattern {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ff0080' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  animation: fractal-rotate 30s infinite linear;
+  opacity: 0.4;
+}
+
+@keyframes fractal-rotate {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.1); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+@media (max-width: 768px) {
+  .liquid-morph {
+    width: 200px;
+    height: 200px;
+  }
+
+  .liquid-morph:nth-child(2) {
+    width: 150px;
+    height: 150px;
+  }
+
+  .liquid-morph:nth-child(3) {
+    width: 120px;
+    height: 120px;
+  }
+}
