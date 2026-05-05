@@ -4,13 +4,13 @@ import { usePostEngagement } from '../../hooks/usePostEngagement'
 import styles from './PostActions.module.css'
 
 type Props = {
-  postId: string
+  post: { id: string, authorId: string }
   disabled?: boolean
   onOpenComments?: () => void
 }
 
-export function PostActions({ postId, disabled, onOpenComments }: Props) {
-  const { liked, toggleLike } = usePostEngagement(postId)
+export function PostActions({ post, disabled, onOpenComments }: Props) {
+  const { liked, toggleLike } = usePostEngagement(post)
   return (
     <div className={styles.row}>
       <div className={styles.left}>

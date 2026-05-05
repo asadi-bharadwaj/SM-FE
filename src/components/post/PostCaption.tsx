@@ -12,7 +12,7 @@ type Props = {
 }
 
 export function PostCaption({ post, showCommentCta, locked }: Props) {
-  const { comments } = usePostEngagement(post.id)
+  const { comments } = usePostEngagement(post)
   const [open, setOpen] = useState(false)
   const over100 = post.caption.length > 100
 

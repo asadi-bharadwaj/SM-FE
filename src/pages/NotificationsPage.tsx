@@ -1,21 +1,29 @@
 import { useEffect, useState } from "react";
 
-type NotificationItem = {
+type NotificationResponse = {
   id: number;
-  creatorId: number;
-  userId: number;
+  recipientId: string;
+  type: string;
+  title: string;
+  message: string;
+  read: boolean;
+  createdAt: string;
 };
 
 export function NotificationsPage() {
-  const [items, setItems] = useState<NotificationItem[]>([]);
+  const [items, setItems] = useState<NotificationResponse[]>([]);
   const [loading, setLoading] = useState(true);
 
   const userId = localStorage.getItem("userId");
 
   useEffect(() => {
-    if (!userId) return;
+    if (!userId) {
+      setLoading(false);
+      return;
+    }
 
-    fetch("http://localhost:8081/users/following", {
+    // Fetch real notifications from the Notification Service
+    fetch(`http://localhost:8081/api/notifications?recipientId=${userId}`, {
       headers: {
         "X-User-Id": userId,
       },
@@ -24,9 +32,23 @@ export function NotificationsPage() {
       .then((d) => {
         setItems(Array.isArray(d) ? d : []);
       })
-      .catch(() => setItems([]))
+      .catch((err) => {
+        console.error("Failed to fetch notifications:", err);
+        setItems([]);
+      })
       .finally(() => setLoading(false));
   }, [userId]);
+
+  const markAsRead = async (id: number) => {
+    try {
+      await fetch(`http://localhost:8081/api/notifications/${id}/read`, {
+        method: "PUT",
+      });
+      setItems(prev => prev.map(item => item.id === id ? { ...item, read: true } : item));
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   if (loading) {
     return (
@@ -68,33 +90,62 @@ export function NotificationsPage() {
         </div>
       )}
 
-      {items.map((item, index) => (
+      {items.map((item) => (
         <div
-          key={index}
+          key={item.id}
+          onClick={() => !item.read && markAsRead(item.id)}
           style={{
-            background: "#111",
-            border: "1px solid #222",
+            background: item.read ? "#0a0a0a" : "#111",
+            border: item.read ? "1px solid #1a1a1a" : "1px solid #333",
             borderRadius: "16px",
             padding: "18px",
             marginBottom: "14px",
+            cursor: item.read ? "default" : "pointer",
+            position: "relative",
           }}
         >
+          {!item.read && (
+            <div
+              style={{
+                position: "absolute",
+                top: "20px",
+                right: "20px",
+                width: "8px",
+                height: "8px",
+                borderRadius: "50%",
+                background: "#0095f6",
+              }}
+            />
+          )}
+
           <div
             style={{
               fontWeight: 700,
-              marginBottom: "6px",
+              marginBottom: "4px",
+              color: item.read ? "#aaa" : "#fff",
             }}
           >
-            Subscription Active
+            {item.title}
           </div>
 
           <div
             style={{
-              color: "#9a9a9a",
+              color: item.read ? "#666" : "#9a9a9a",
               fontSize: "14px",
+              lineHeight: 1.5,
             }}
           >
-            You subscribed to creator #{item.creatorId}
+            {item.message}
+          </div>
+
+          <div
+            style={{
+              marginTop: "10px",
+              fontSize: "11px",
+              color: "#555",
+            }}
+          >
+            {new Date(item.createdAt).toLocaleString()}
           </div>
         </div>
       ))}

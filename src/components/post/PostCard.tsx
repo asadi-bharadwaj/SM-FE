@@ -21,7 +21,7 @@ type Props = {
 export function PostCard({ post }: Props) {
   const locked = useIsPostLocked(post)
   const toggleSub = useSubscriptionStore((s) => s.toggleSubscribe)
-  const { likeCount } = usePostEngagement(post.id)
+  const { likeCount } = usePostEngagement(post)
   const [showLikes, setShowLikes] = useState(false)
 
   return (
@@ -35,7 +35,7 @@ export function PostCard({ post }: Props) {
         locked={locked}
         onSubscribe={() => toggleSub(post.authorId)}
       />
-      <PostActions postId={post.id} disabled={locked} />
+      <PostActions post={post} disabled={locked} />
       <LikeCount
         count={likeCount}
         disabled={locked}
@@ -49,8 +49,8 @@ export function PostCard({ post }: Props) {
         />
       )}
       <PostCaption post={post} locked={locked} showCommentCta />
-      <CommentList postId={post.id} max={2} locked={locked} />
-      <CommentComposer postId={post.id} disabled={locked} />
+      <CommentList post={post} max={2} locked={locked} />
+      <CommentComposer post={post} disabled={locked} />
     </article>
   )
 }
