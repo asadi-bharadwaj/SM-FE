@@ -82,65 +82,82 @@ export default function Register() {
 
   return (
     <div className="auth-page">
-      <div className="auth-card">
-        <h1>{step === 1 ? "Create Account" : "Verify Email"}</h1>
-        <p>{step === 1 ? "Join the community" : `We sent an OTP to ${email}`}</p>
+      <div className="auth-grid">
+        <section className="auth-left">
+          <div className="auth-art">
+            <span className="auth-badge">#SocialCanvas</span>
+            <h2>Join the community.<br />Create for impact.</h2>
+            <p>
+              A next-generation social platform for creators and fans. Share bold
+              ideas, subscribe to voices you love, and grow a community with modern
+              style and energy.
+            </p>
+          </div>
+          <div className="auth-ornament auth-ornament-1" />
+          <div className="auth-ornament auth-ornament-2" />
+          <div className="auth-ornament auth-ornament-3" />
+        </section>
 
-        {error && <div style={{ color: "#ff4d4d", marginBottom: "15px", fontSize: "14px", fontWeight: 500 }}>{error}</div>}
+        <main className="auth-card">
+          <h1>{step === 1 ? "Create Account" : "Verify Email"}</h1>
+          <p>{step === 1 ? "Join the community" : `We sent an OTP to ${email}`}</p>
 
-        {step === 1 ? (
-          <form onSubmit={startRegister}>
-            <input
-              type="text"
-              placeholder="Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
-            <input
-              type="email"
-              placeholder="Email address"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <input
-              type="password"
-              placeholder="Password (8+ chars, 1 Special, 1 Num, 1 Upper)"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-            <button type="submit" disabled={loading}>
-              {loading ? "Sending OTP..." : "Continue"}
-            </button>
-          </form>
-        ) : (
-          <form onSubmit={completeRegister}>
-            <input
-              type="text"
-              placeholder="Enter 6-digit OTP"
-              value={otp}
-              onChange={(e) => setOtp(e.target.value)}
-              maxLength={6}
-              required
-            />
-            <button type="submit" disabled={loading}>
-              {loading ? "Verifying..." : "Verify & Create Account"}
-            </button>
-            <button
-              type="button"
-              onClick={() => setStep(1)}
-              style={{ background: "none", border: "none", color: "#aaa", marginTop: "10px", cursor: "pointer" }}
-            >
-              ← Back to details
-            </button>
-          </form>
-        )}
+          {error && <div className="auth-error">{error}</div>}
 
-        <span>
-          Already have an account? <Link to="/login">Log in</Link>
-        </span>
+          {step === 1 ? (
+            <form onSubmit={startRegister}>
+              <input
+                type="text"
+                placeholder="Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+              />
+              <input
+                type="email"
+                placeholder="Email address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+              <input
+                type="password"
+                placeholder="Password (8+ chars, 1 Special, 1 Num, 1 Upper)"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <button type="submit" disabled={loading}>
+                {loading ? "Sending OTP..." : "Continue"}
+              </button>
+            </form>
+          ) : (
+            <form onSubmit={completeRegister}>
+              <input
+                type="text"
+                placeholder="Enter 6-digit OTP"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+                maxLength={6}
+                required
+              />
+              <button type="submit" disabled={loading}>
+                {loading ? "Verifying..." : "Verify & Create Account"}
+              </button>
+              <button
+                type="button"
+                onClick={() => setStep(1)}
+                className="auth-secondary"
+              >
+                ← Back to details
+              </button>
+            </form>
+          )}
+
+          <span>
+            Already have an account? <Link to="/login">Log in</Link>
+          </span>
+        </main>
       </div>
     </div>
   );
