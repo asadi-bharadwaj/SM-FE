@@ -85,15 +85,13 @@ export function ProfileStats({
     }
   };
 
-  const matchUser = (id: any) =>
-    users.find((u: any) => {
-      const candidate = String(id ?? "");
-      return (
-        String(u.id) === candidate ||
-        String(u.userId) === candidate ||
-        String(u.authUserId) === candidate
-      );
-    });
+  const matchUser = (id: any) => {
+    const candidate = String(id ?? "");
+    if (!candidate) return undefined;
+    return users.find((u: any) => 
+      String(u.authUserId) === candidate || String(u.id) === candidate
+    );
+  };
 
   const makeProfile = (id: any, label: string) => {
     const matched = matchUser(id)
@@ -107,21 +105,11 @@ export function ProfileStats({
   }
 
   const followerProfiles = followers
-    .map((x) =>
-      makeProfile(
-        x.userId ?? x.followerId ?? x.id ?? x.creatorId,
-        "Follower"
-      )
-    )
+    .map((x) => makeProfile(x.userId, "Follower"))
     .filter(Boolean);
 
   const followingProfiles = following
-    .map((x) =>
-      makeProfile(
-        x.creatorId ?? x.userId ?? x.id,
-        "Creator"
-      )
-    )
+    .map((x) => makeProfile(x.creatorId, "Creator"))
     .filter(Boolean);
 
   return (
@@ -193,10 +181,11 @@ function Popup({
       style={{
         position: "fixed",
         inset: 0,
-        background: "rgba(0,0,0,.7)",
+        background: "rgba(0,0,0,.8)",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
+        zIndex: 1000,
       }}
     >
       <div
@@ -204,16 +193,19 @@ function Popup({
           e.stopPropagation()
         }
         style={{
-          background: "#111",
+          background: "#181818",
           padding: 24,
           width: 420,
-          borderRadius: 20,
+          maxHeight: "80vh",
+          overflowY: "auto",
+          borderRadius: 12,
+          border: "1px solid #333",
         }}
       >
-        <h2>{title}</h2>
+        <h2 style={{ marginTop: 0 }}>{title}</h2>
 
         {users.length === 0 && (
-          <p>No users found.</p>
+          <p style={{ color: "#888" }}>No users found.</p>
         )}
 
         {users.map((u: any) => (
@@ -223,9 +215,9 @@ function Popup({
               style={{
                 display: "block",
                 padding: "12px 0",
-                color: "white",
+                color: "#888",
                 borderBottom:
-                  "1px solid rgba(255,255,255,.05)",
+                  "1px solid #262626",
               }}
             >
               {u.displayName}
@@ -241,10 +233,11 @@ function Popup({
                 color: "white",
                 textDecoration: "none",
                 borderBottom:
-                  "1px solid rgba(255,255,255,.05)",
+                  "1px solid #262626",
               }}
             >
-              @{u.username}
+              <div style={{ fontWeight: 600 }}>@{u.username}</div>
+              <div style={{ fontSize: "0.85rem", color: "#888" }}>{u.displayName}</div>
             </Link>
           )
         ))}
