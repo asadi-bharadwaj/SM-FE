@@ -27,7 +27,7 @@ function PostPageInner({ post: p }: { post: Post }) {
   const nav = useNavigate()
   const locked = useIsPostLocked(p)
   const toggle = useSubscriptionStore((s) => s.toggleSubscribe)
-  const { likeCount } = usePostEngagement(p.id)
+  const { likeCount } = usePostEngagement(p)
   const [showLikes, setShowLikes] = useState(false)
   return (
     <div className={styles.page}>
@@ -42,7 +42,7 @@ function PostPageInner({ post: p }: { post: Post }) {
       <article className={styles.inner}>
         <PostHeader post={p} />
         <PostMedia post={p} locked={locked} onSubscribe={() => toggle(p.authorId)} />
-        <PostActions postId={p.id} disabled={locked} />
+        <PostActions post={p} disabled={locked} />
         <LikeCount
           count={likeCount}
           disabled={locked}
@@ -52,8 +52,8 @@ function PostPageInner({ post: p }: { post: Post }) {
           <LikesModal postId={p.id} likeCount={likeCount} onClose={() => setShowLikes(false)} />
         )}
         <PostCaption post={p} locked={locked} showCommentCta={false} />
-        <CommentList postId={p.id} locked={locked} />
-        <CommentComposer postId={p.id} disabled={locked} />
+        <CommentList post={p} locked={locked} />
+        <CommentComposer post={p} disabled={locked} />
       </article>
     </div>
   )

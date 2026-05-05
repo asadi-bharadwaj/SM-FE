@@ -2,11 +2,11 @@ import { useState } from 'react'
 import { usePostEngagement } from '../../hooks/usePostEngagement'
 import styles from './CommentComposer.module.css'
 
-type Props = { postId: string; disabled?: boolean }
+type Props = { post: { id: string, authorId: string }; disabled?: boolean }
 
-export function CommentComposer({ postId, disabled }: Props) {
+export function CommentComposer({ post, disabled }: Props) {
   const [t, setT] = useState('')
-  const { addComment } = usePostEngagement(postId)
+  const { addComment } = usePostEngagement(post)
   return (
     <form
       className={styles.form}

@@ -191,6 +191,51 @@ export function AppLayout() {
             <Item to="/messages" label="Messages" />
             <Item to="/notifications" label="Notifications" />
             <Item to="/settings" label="Settings" />
+
+            <button
+              onClick={() => {
+                localStorage.removeItem("token");
+                localStorage.removeItem("refreshToken");
+                localStorage.removeItem("userId");
+                window.location.href = "/login";
+              }}
+              className="lux-nav"
+              onMouseMove={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect();
+                e.currentTarget.style.setProperty("--x", `${e.clientX - rect.left}px`);
+                e.currentTarget.style.setProperty("--y", `${e.clientY - rect.top}px`);
+              }}
+              style={{
+                position: "relative",
+                padding: "15px 10px",
+                color: "#ff4d4d",
+                background: "none",
+                border: "none",
+                textAlign: "left",
+                cursor: "pointer",
+                fontWeight: 500,
+                fontSize: "15px",
+                letterSpacing: "0.25px",
+                overflow: "hidden",
+                borderBottom: "1px solid rgba(255,255,255,0.05)",
+                transition: "all 0.25s ease",
+                marginTop: "20px",
+                fontFamily: "inherit",
+              }}
+            >
+              <span style={{ position: "relative", zIndex: 2 }}>Logout</span>
+              <span
+                className="mouse-light"
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  background: "radial-gradient(circle at var(--x,50%) var(--y,50%), rgba(255,77,77,0.12), transparent 45%)",
+                  opacity: 0,
+                  transition: "opacity 0.18s ease",
+                  zIndex: 1,
+                }}
+              />
+            </button>
           </div>
         </aside>
 
