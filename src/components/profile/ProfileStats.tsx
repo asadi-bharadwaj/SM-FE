@@ -236,7 +236,7 @@ function Popup({
                   "1px solid #262626",
               }}
             >
-              <div style={{ fontWeight: 600 }}>@{u.username}</div>
+              <div style={{ fontWeight: 600 }}>{u.username}</div>
               <div style={{ fontSize: "0.85rem", color: "#888" }}>{u.displayName}</div>
             </Link>
           )

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { SubscribedCreatorsFeed } from "../components/feed/SubscribedCreatorsFeed";
 
 export function SearchPage() {
   const [tab, setTab] = useState("feed");
@@ -214,19 +215,7 @@ export function SearchPage() {
         </div>
 
         {tab === "feed" && (
-          <div
-            className="lux-box"
-            onMouseMove={glowMove}
-            style={{
-              background: "#111",
-              border: "1px solid #222",
-              borderRadius: "20px",
-              padding: "24px",
-              color: "#8e8e8e",
-            }}
-          >
-            Feed content coming soon.
-          </div>
+          <SubscribedCreatorsFeed onBrowseProfiles={() => setTab("profiles")} />
         )}
 
         {tab === "profiles" && (

@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ProfilePageView } from "../components/profile/ProfilePageView";
 import { NotFoundPage } from "./NotFoundPage";
+import { mapContentServicePost } from "../lib/contentPost";
+import type { Post } from "../types";
 
 export function ProfilePage() {
   const { username } = useParams();
@@ -12,6 +14,7 @@ export function ProfilePage() {
   const [subscriberCount, setSubscriberCount] = useState(0);
   const [subscriptionCount, setSubscriptionCount] = useState(0);
   const [refreshCounter, setRefreshCounter] = useState(0);
+  const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
     loadData();
@@ -58,29 +61,51 @@ export function ProfilePage() {
       }
 
       setUser(profileUser);
+      setLoading(false);
 
-      const followers = await fetch(
-        "http://localhost:8081/users/followers",
-        {
+      const postsUserId =
+        username === "me"
+          ? currentUserId || profileUser.authUserId
+          : profileUser.authUserId ?? profileUser.id;
+      const postsNumeric =
+        postsUserId != null && postsUserId !== "" && Number.isFinite(Number(postsUserId))
+          ? Number(postsUserId)
+          : NaN;
+
+      const [followers, following, postsPayload] = await Promise.all([
+        fetch("http://localhost:8081/users/followers", {
           headers: { "X-User-Id": profileId },
-        }
-      ).then((r) => r.json());
+        }).then((r) => r.json()),
+        fetch("http://localhost:8081/users/following", {
+          headers: { "X-User-Id": profileId },
+        }).then((r) => r.json()),
+        Number.isFinite(postsNumeric)
+          ? fetch(`http://localhost:8081/users/${postsNumeric}/posts`).then((r) =>
+              r.ok ? r.json() : []
+            )
+          : Promise.resolve([]),
+      ]);
 
       setSubscriberCount(Array.isArray(followers) ? followers.length : 0);
-
-      const following = await fetch(
-        "http://localhost:8081/users/following",
-        {
-          headers: { "X-User-Id": profileId },
-        }
-      ).then((r) => r.json());
-
       setSubscriptionCount(Array.isArray(following) ? following.length : 0);
+
+      const fb = {
+        id: String(profileId),
+        username: profileUser.username || "",
+        displayName: profileUser.displayName || profileUser.username || "",
+        avatarUrl:
+          profileUser.avatarUrl ||
+          `https://api.dicebear.com/7.x/avataaars/svg?seed=${profileUser.username}`,
+      };
+      setPosts(
+        Array.isArray(postsPayload)
+          ? postsPayload.map((dto: Record<string, unknown>) => mapContentServicePost(dto, fb))
+          : []
+      );
     } catch (e) {
       console.log(e);
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   const refreshCounts = async () => {
@@ -89,22 +114,16 @@ export function ProfilePage() {
     const profileId = username === "me" ? currentUserId || getStableId(user) : getStableId(user);
 
     try {
-      const followers = await fetch(
-        "http://localhost:8081/users/followers",
-        {
+      const [followers, following] = await Promise.all([
+        fetch("http://localhost:8081/users/followers", {
           headers: { "X-User-Id": profileId },
-        }
-      ).then((r) => r.json());
+        }).then((r) => r.json()),
+        fetch("http://localhost:8081/users/following", {
+          headers: { "X-User-Id": profileId },
+        }).then((r) => r.json()),
+      ]);
 
       setSubscriberCount(Array.isArray(followers) ? followers.length : 0);
-
-      const following = await fetch(
-        "http://localhost:8081/users/following",
-        {
-          headers: { "X-User-Id": profileId },
-        }
-      ).then((r) => r.json());
-
       setSubscriptionCount(Array.isArray(following) ? following.length : 0);
     } catch (e) {
       console.log(e);
@@ -138,7 +157,7 @@ export function ProfilePage() {
         subscriptionCount,
         followingCount: subscriptionCount,
       }}
-      posts={[]}
+      posts={posts}
       isMe={isCurrentUser}
       onSubscriptionChange={handleSubscriptionChange}
       currentUserId={currentUserId || undefined}
