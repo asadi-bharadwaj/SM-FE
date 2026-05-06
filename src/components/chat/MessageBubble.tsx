@@ -1,20 +1,23 @@
-import { CURRENT_USER_ID } from '../../mocks/users'
-import type { Message } from '../../types'
 import styles from './MessageBubble.module.css'
 import { timeAgo } from '../../lib/time'
 
-type Props = { message: Message }
+type Props = {
+  message: string;
+  isMe: boolean;
+  timestamp?: string;
+}
 
-export function MessageBubble({ message }: Props) {
-  const mine = message.senderId === CURRENT_USER_ID
+export function MessageBubble({ message, isMe, timestamp }: Props) {
   return (
-    <li className={mine ? styles.mine : styles.them} aria-label="Message">
+    <div className={isMe ? styles.mine : styles.them}>
       <div className={styles.bubble}>
-        {message.body}
-        <div className={styles.meta} title={message.createdAt}>
-          {timeAgo(message.createdAt)}
-        </div>
+        {message}
+        {timestamp && (
+          <div className={styles.meta} title={timestamp}>
+            {timeAgo(timestamp)}
+          </div>
+        )}
       </div>
-    </li>
+    </div>
   )
 }

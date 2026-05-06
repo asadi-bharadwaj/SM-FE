@@ -16,18 +16,21 @@ export default function Register() {
 
   const navigate = useNavigate();
 
-  const validateLocal = () => {
-    if (!formData.email.includes("@")) return "Invalid email format.";
-    if (formData.password.length < 8) return "Password must be at least 8 characters.";
-    if (!/[!@#$%^&*(),.?":{}|<>]/.test(formData.password)) return "Password must contain a special character.";
-    if (!/[0-9]/.test(formData.password)) return "Password must contain a number.";
-    if (!/[A-Z]/.test(formData.password)) return "Password must contain an uppercase letter.";
+  const validateLocal = (data: Record<string, string>) => {
+    const e = (data.email || "").trim();
+    const p = (data.password || "").trim();
+
+    if (!e.includes("@") || !e.includes(".")) return "Invalid email format.";
+    if (p.length < 8) return "Password must be at least 8 characters.";
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(p)) return "Password must contain a special character.";
+    if (!/[0-9]/.test(p)) return "Password must contain a number.";
+    if (!/[A-Z]/.test(p)) return "Password must contain an uppercase letter.";
     return null;
   };
 
   const startRegister = async (data: Record<string, string>) => {
     setError("");
-    const localError = validateLocal();
+    const localError = validateLocal(data);
     if (localError) {
       setError(localError);
       return;

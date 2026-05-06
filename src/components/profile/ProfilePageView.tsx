@@ -45,15 +45,21 @@ export function ProfilePageView({
   }, [user.id, actualIsMe, loggedInUserId]);
 
   const checkSubscriptionStatus = async () => {
+    if (!loggedInUserId || !user.id || actualIsMe) return;
+    
     try {
-      const following = await fetch(
+      const response = await fetch(
         "http://localhost:8081/users/following",
         {
           headers: {
-            "X-User-Id": loggedInUserId || "",
+            "X-User-Id": String(loggedInUserId),
           },
         }
-      ).then((r) => r.json());
+      );
+      
+      if (!response.ok) return;
+      
+      const following = await response.json();
 
       if (Array.isArray(following)) {
         const isUserSubscribed = following.some(
@@ -81,7 +87,7 @@ export function ProfilePageView({
         {
           method,
           headers: {
-            "X-User-Id": loggedInUserId,
+            "X-User-Id": String(loggedInUserId),
           },
         }
       );
@@ -109,8 +115,12 @@ export function ProfilePageView({
         isSubscribed={isSubscribed}
         onSubscribe={handleSubscribe}
         onMessage={
-          !actualIsMe && isSubscribed
-            ? () => nav("/messages")
+          !actualIsMe
+            ? () => {
+                const ids = [String(loggedInUserId), String(user.id)].sort();
+                const threadId = ids.join("_");
+                nav(`/messages/${threadId}?recipientId=${user.id}`);
+              }
             : undefined
         }
         refreshTrigger={refreshTrigger}

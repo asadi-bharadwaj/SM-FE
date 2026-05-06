@@ -1,17 +1,9 @@
-import type { PublicProfile } from './user'
-
-export type Message = {
-  id: string
-  threadId: string
-  senderId: string
-  body: string
-  createdAt: string
-}
-
-export type Thread = {
-  id: string
-  participants: PublicProfile[]
-  lastMessage: { body: string; createdAt: string; senderId: string }
-  unreadCount: number
-  messages: Message[]
-}
+export type ChatMessage = {
+  id?: number;
+  senderId: string;
+  recipientId: string;
+  content: string;
+  timestamp?: string;
+  threadId: string;
+  isRead?: boolean;
+};

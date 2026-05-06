@@ -1,4 +1,6 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
+import { useChatStore } from "../stores/chatStore";
+import { useEffect, useRef } from "react";
 
 function Item({ to, label }: { to: string; label: string }) {
   const { pathname } = useLocation();
@@ -109,6 +111,18 @@ function Item({ to, label }: { to: string; label: string }) {
 }
 
 export function AppLayout() {
+  const { connect, disconnect } = useChatStore();
+  const userId = localStorage.getItem("userId");
+  const connStarted = useRef(false);
+
+  useEffect(() => {
+    if (userId && !connStarted.current) {
+      connStarted.current = true;
+      connect(userId);
+    }
+    // Only disconnect on logout or refresh
+  }, [userId, connect]);
+
   return (
     <>
       <style>

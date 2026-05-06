@@ -10,6 +10,8 @@ import { CreatePostPage } from '../pages/CreatePostPage'
 import { SettingsPage } from '../pages/SettingsPage'
 import { NotFoundPage } from '../pages/NotFoundPage'
 import { PlaceholderPage } from '../pages/PlaceholderPage'
+import { MessagesInboxPage } from '../pages/MessagesInboxPage'
+import { MessageThreadPage } from '../pages/MessageThreadPage'
 
 import Login from '../pages/Login'
 import Register from '../pages/Register'
@@ -39,50 +41,8 @@ export const router = createBrowserRouter([
       { path: 'feed', element: <FeedPage /> },
       { path: 'u/:username', element: <ProfilePage /> },
       { path: 'p/:postId', element: <PostPage /> },
-
-      {
-  path: 'messages',
-  element: (
-    <div
-      style={{
-        minHeight: '70vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        color: '#fff',
-      }}
-    >
-      <div
-        style={{
-          textAlign: 'center',
-          maxWidth: '500px',
-        }}
-      >
-        <h1
-          style={{
-            fontSize: '42px',
-            marginBottom: '14px',
-            fontWeight: 800,
-          }}
-        >
-          Messages Coming Soon
-        </h1>
-
-        <p
-          style={{
-            color: '#8a8a8a',
-            fontSize: '16px',
-            lineHeight: 1.6,
-          }}
-        >
-          Private messaging is under development.
-          A premium chat experience is on the way.
-        </p>
-      </div>
-    </div>
-  ),
-},
-
+      { path: 'messages', element: <MessagesInboxPage /> },
+      { path: 'messages/:threadId', element: <MessageThreadPage /> },
       { path: 'notifications', element: <NotificationsPage /> },
       { path: 'create', element: <CreatePostPage /> },
       { path: 'reels', element: <PlaceholderPage /> },
