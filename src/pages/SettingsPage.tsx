@@ -1,170 +1,95 @@
-import { useEffect, useState } from "react";
-import { AvatarUpload } from "../components/settings/AvatarUpload";
+import { Link } from 'react-router-dom'
+import { ChevronRight } from 'lucide-react'
+
+const items: { to: string; label: string; hint?: string }[] = [
+  { to: '/settings/account', label: 'Account centre', hint: 'Profile, avatar, and login details' },
+  { to: '/settings/saved-posts', label: 'Saved posts', hint: 'Posts you have saved' },
+  { to: '/settings/time-management', label: 'Time management', hint: 'Screen time and reminders' },
+  { to: '/settings/blocked', label: 'Blocked', hint: 'Accounts you have blocked' },
+  { to: '/settings/close-friends', label: 'Close friends', hint: 'Share with people you choose' },
+]
 
 export function SettingsPage() {
-  const userId = localStorage.getItem("userId");
-
-  const [form, setForm] = useState({
-    displayName: "",
-    bio: "",
-    country: "",
-    language: "",
-    avatarUrl: "",
-  });
-
-  useEffect(() => {
-    fetch("http://localhost:8081/users/me", {
-      headers: {
-        "X-User-Id": userId || "",
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setForm({
-          displayName: data.displayName || "",
-          bio: data.bio || "",
-          country: data.country || "",
-          language: data.language || "",
-          avatarUrl: data.avatarUrl || "",
-        });
-      });
-  }, []);
-
-  const save = async () => {
-    const res = await fetch("http://localhost:8081/users/me", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        "X-User-Id": userId || "",
-      },
-      body: JSON.stringify(form),
-    });
-
-    if (res.ok) {
-      alert("Profile Updated");
-    } else {
-      alert("Failed");
-    }
-  };
-
-  const handleAvatarChange = (avatarUrl: string) => {
-    setForm(prev => ({ ...prev, avatarUrl }));
-  };
-
   return (
-    <div style={{
-      maxWidth: 500,
-      margin: "auto",
-      padding: 20,
-      minHeight: "100vh",
-      display: "flex",
-      flexDirection: "column",
-      gap: 20
-    }}>
-      <h2 style={{
-        textAlign: "center",
-        color: "white",
-        marginBottom: 20,
-        fontSize: "2rem",
-        fontWeight: 700
-      }}>
-        Edit Profile
-      </h2>
+    <div
+      style={{
+        maxWidth: 560,
+        margin: '0 auto',
+        padding: '24px 20px 80px',
+        minHeight: '100vh',
+      }}
+    >
+      <h1
+        style={{
+          color: '#fff',
+          fontSize: '1.85rem',
+          fontWeight: 800,
+          margin: '0 0 8px',
+        }}
+      >
+        Settings
+      </h1>
+      <p style={{ color: '#666', margin: '0 0 28px', fontSize: '0.95rem' }}>
+        Manage your account and preferences
+      </p>
 
-      <AvatarUpload
-        currentAvatarUrl={form.avatarUrl}
-        onAvatarChange={handleAvatarChange}
-      />
-
-      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-        <input placeholder="Display Name"
-          value={form.displayName}
-          onChange={(e)=>setForm({...form, displayName:e.target.value})}
-          style={{
-            padding: "14px 16px",
-            background: "rgba(25, 25, 25, 0.9)",
-            border: "1px solid rgba(255, 255, 255, 0.08)",
-            borderRadius: "12px",
-            color: "white",
-            fontSize: "0.95rem",
-            transition: "all 0.3s ease"
-          }}
-        />
-
-        <textarea
-          placeholder="Bio"
-          value={form.bio}
-          onChange={(e)=>setForm({...form, bio:e.target.value})}
-          rows={3}
-          style={{
-            padding: "14px 16px",
-            background: "rgba(25, 25, 25, 0.9)",
-            border: "1px solid rgba(255, 255, 255, 0.08)",
-            borderRadius: "12px",
-            color: "white",
-            fontSize: "0.95rem",
-            resize: "vertical",
-            minHeight: "80px",
-            transition: "all 0.3s ease"
-          }}
-        />
-
-        <input placeholder="Country"
-          value={form.country}
-          onChange={(e)=>setForm({...form, country:e.target.value})}
-          style={{
-            padding: "14px 16px",
-            background: "rgba(25, 25, 25, 0.9)",
-            border: "1px solid rgba(255, 255, 255, 0.08)",
-            borderRadius: "12px",
-            color: "white",
-            fontSize: "0.95rem",
-            transition: "all 0.3s ease"
-          }}
-        />
-
-        <input placeholder="Language"
-          value={form.language}
-          onChange={(e)=>setForm({...form, language:e.target.value})}
-          style={{
-            padding: "14px 16px",
-            background: "rgba(25, 25, 25, 0.9)",
-            border: "1px solid rgba(255, 255, 255, 0.08)",
-            borderRadius: "12px",
-            color: "white",
-            fontSize: "0.95rem",
-            transition: "all 0.3s ease"
-          }}
-        />
-
-        <button
-          onClick={save}
-          style={{
-            padding: "16px 20px",
-            background: "linear-gradient(135deg, rgba(59, 130, 246, 0.8) 0%, rgba(6, 182, 212, 0.8) 100%)",
-            border: "none",
-            borderRadius: "12px",
-            color: "white",
-            fontSize: "0.95rem",
-            fontWeight: 600,
-            cursor: "pointer",
-            transition: "all 0.3s ease",
-            marginTop: "8px",
-            textTransform: "uppercase",
-            letterSpacing: "0.025em"
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = "translateY(-2px)";
-            e.currentTarget.style.boxShadow = "0 8px 25px rgba(59, 130, 246, 0.4)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = "translateY(0)";
-            e.currentTarget.style.boxShadow = "none";
-          }}
-        >
-          Save Profile
-        </button>
-      </div>
+      <ul
+        style={{
+          listStyle: 'none',
+          margin: 0,
+          padding: 0,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 10,
+        }}
+      >
+        {items.map((item) => (
+          <li key={item.to}>
+            <Link
+              to={item.to}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 14,
+                padding: '16px 18px',
+                background: '#111',
+                border: '1px solid #222',
+                borderRadius: 14,
+                textDecoration: 'none',
+                color: '#fff',
+                transition: 'border-color 0.2s, background 0.2s',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = '#333'
+                e.currentTarget.style.background = '#161616'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = '#222'
+                e.currentTarget.style.background = '#111'
+              }}
+            >
+              <span style={{ flex: 1, minWidth: 0 }}>
+                <span
+                  style={{
+                    display: 'block',
+                    fontWeight: 650,
+                    fontSize: '1rem',
+                    marginBottom: item.hint ? 4 : 0,
+                  }}
+                >
+                  {item.label}
+                </span>
+                {item.hint ? (
+                  <span style={{ display: 'block', fontSize: '0.82rem', color: '#666' }}>
+                    {item.hint}
+                  </span>
+                ) : null}
+              </span>
+              <ChevronRight size={20} color="#555" aria-hidden />
+            </Link>
+          </li>
+        ))}
+      </ul>
     </div>
-  );
+  )
 }

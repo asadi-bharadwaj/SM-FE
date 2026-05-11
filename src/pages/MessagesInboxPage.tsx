@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useChatStore } from "../stores/chatStore";
 import type { ChatMessage } from "../types/chat";
@@ -6,6 +6,7 @@ import { Search, MessageCircle } from "lucide-react";
 
 type UserProfile = {
   id: string;
+  authUserId?: string;
   username: string;
   displayName: string;
   avatarUrl: string;
@@ -15,17 +16,19 @@ export function MessagesInboxPage() {
   const [threads, setThreads] = useState<ChatMessage[]>([]);
   const [allUsers, setAllUsers] = useState<UserProfile[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [loading, setLoading] = useState(true);
-  
+  const [threadsLoading, setThreadsLoading] = useState(() => !!localStorage.getItem("userId"));
+
   const { connected } = useChatStore();
   const navigate = useNavigate();
   const userId = localStorage.getItem("userId") || "";
 
   useEffect(() => {
-    if (userId) {
-      loadInbox();
-      loadUsers();
+    if (!userId) {
+      setThreadsLoading(false);
+      return;
     }
+    loadInbox();
+    loadUsers();
   }, [userId]);
 
   useEffect(() => {
@@ -40,19 +43,17 @@ export function MessagesInboxPage() {
 
   const loadInbox = async () => {
     if (!userId) return;
+    setThreadsLoading(true);
     try {
       const res = await fetch(`http://localhost:8081/chat/threads/${userId}`);
       if (res.ok) {
         const data = await res.json();
-        const uniqueThreads = Array.from(
-          new Map(data.map((m: ChatMessage) => [m.threadId, m])).values()
-        ) as ChatMessage[];
-        setThreads(uniqueThreads);
+        setThreads(data as ChatMessage[]);
       }
     } catch (err) {
       console.error("Failed to fetch inbox", err);
     } finally {
-      setLoading(false);
+      setThreadsLoading(false);
     }
   };
 
@@ -68,12 +69,18 @@ export function MessagesInboxPage() {
     }
   };
 
-  const filteredUsers = allUsers.filter(u => 
-    String(u.id) !== String(userId) && 
-    String(u.authUserId) !== String(userId) &&
-    (u.username?.toLowerCase().includes(searchQuery.toLowerCase()) || 
-     u.displayName?.toLowerCase().includes(searchQuery.toLowerCase()))
-  ).slice(0, 8);
+  const filteredUsers = useMemo(() => {
+    const q = searchQuery.toLowerCase();
+    const seen = new Set<string>();
+    return allUsers.filter((u) => {
+      if (String(u.id) === String(userId) || String(u.authUserId ?? "") === String(userId)) return false;
+      if (!u.username?.toLowerCase().includes(q) && !u.displayName?.toLowerCase().includes(q)) return false;
+      const dedupeKey = String(u.authUserId ?? u.id);
+      if (seen.has(dedupeKey)) return false;
+      seen.add(dedupeKey);
+      return true;
+    }).slice(0, 8);
+  }, [allUsers, searchQuery, userId]);
 
   const startNewChat = (user: UserProfile) => {
     const targetId = user.id || (user as any).authUserId;
@@ -170,7 +177,7 @@ export function MessagesInboxPage() {
             ) : (
               filteredUsers.map(u => (
                 <div 
-                  key={u.id}
+                  key={String(u.authUserId ?? u.id)}
                   onClick={() => startNewChat(u)}
                   style={{ 
                     padding: "12px 16px", 
@@ -199,7 +206,7 @@ export function MessagesInboxPage() {
         )}
       </div>
 
-      {loading ? (
+      {threadsLoading && threads.length === 0 ? (
         <div style={{ textAlign: "center", padding: "40px", color: "#555" }}>Loading conversations...</div>
       ) : threads.length === 0 && !searchQuery ? (
         <div

@@ -37,7 +37,7 @@ export function ProfileHeader({
       <div className={styles.right}>
         <div className={styles.handleRow}>
           <h2 className={styles.h2}>
-            @{user.username}
+            {user.username}
           </h2>
         </div>
 
