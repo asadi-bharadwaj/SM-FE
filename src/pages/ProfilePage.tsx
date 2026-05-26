@@ -80,6 +80,7 @@ export function ProfilePage() {
           }
         }));
       setPosts(mappedPosts);
+      setLoading(false);
 
     } catch (e) {
       console.log(e);
