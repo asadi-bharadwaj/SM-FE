@@ -24,7 +24,7 @@ export function MessagesInboxPage() {
   const [allUsers, setAllUsers] = useState<UserProfile[]>([]);
   const [userGroups, setUserGroups] = useState<ChatGroup[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [threadsLoading, setThreadsLoading] = useState(true);
   
   const [showCreateGroup, setShowCreateGroup] = useState(false);
   const [groupName, setGroupName] = useState("");
