@@ -23,8 +23,16 @@ export function ProfileActions({
         <Button
           className={styles.pill}
           type="button"
+          variant="primary"
+          onClick={() => nav('/create')}
+        >
+          Create post
+        </Button>
+        <Button
+          className={styles.pill}
+          type="button"
           variant="outline"
-          onClick={() => nav('/settings')}
+          onClick={() => nav('/settings/account')}
         >
           Edit profile
         </Button>

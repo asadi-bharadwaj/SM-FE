@@ -83,9 +83,8 @@ export function ProfilePage() {
 
     } catch (e) {
       console.log(e);
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   const refreshCounts = async () => {

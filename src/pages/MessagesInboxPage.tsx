@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useChatStore } from "../stores/chatStore";
 import type { ChatMessage } from "../types/chat";
@@ -7,6 +7,7 @@ import { apiFetch } from "../lib/api";
 
 type UserProfile = {
   id: string;
+  authUserId?: string;
   username: string;
   displayName: string;
   avatarUrl: string;
@@ -52,6 +53,7 @@ export function MessagesInboxPage() {
 
   const loadInbox = async () => {
     if (!userId) return;
+    setThreadsLoading(true);
     try {
       // 1. Load messages/threads
       const threadRes = await apiFetch(`/chat/threads/${userId}`);
@@ -102,7 +104,7 @@ export function MessagesInboxPage() {
     } catch (err) {
       console.error("Failed to fetch inbox", err);
     } finally {
-      setLoading(false);
+      setThreadsLoading(false);
     }
   };
 
@@ -453,7 +455,7 @@ export function MessagesInboxPage() {
             ) : (
               filteredUsers.map(u => (
                 <div 
-                  key={u.id}
+                  key={String(u.authUserId ?? u.id)}
                   onClick={() => startNewChat(u)}
                   style={{ 
                     padding: "12px 16px", 
@@ -482,7 +484,7 @@ export function MessagesInboxPage() {
         )}
       </div>
 
-      {loading ? (
+      {threadsLoading && threads.length === 0 ? (
         <div style={{ textAlign: "center", padding: "40px", color: "#555" }}>Loading conversations...</div>
       ) : threads.length === 0 && !searchQuery ? (
         <div className="inbox-empty">
