@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ProfilePageView } from "../components/profile/ProfilePageView";
 import { NotFoundPage } from "./NotFoundPage";
+import { apiFetch } from "../lib/api";
 
 export function ProfilePage() {
   const { username } = useParams();
@@ -12,6 +13,7 @@ export function ProfilePage() {
   const [subscriberCount, setSubscriberCount] = useState(0);
   const [subscriptionCount, setSubscriptionCount] = useState(0);
   const [refreshCounter, setRefreshCounter] = useState(0);
+  const [posts, setPosts] = useState<any[]>([]);
 
   useEffect(() => {
     loadData();
@@ -30,16 +32,11 @@ export function ProfilePage() {
   const loadData = async () => {
     try {
       let profileUser: any = null;
-      let profileId = "";
 
       if (username === "me") {
-        profileUser = await fetch("http://localhost:8081/users/me", {
-          headers: { "X-User-Id": currentUserId || "" },
-        }).then((r) => r.json());
-
-        profileId = currentUserId || getStableId(profileUser);
+        profileUser = await apiFetch("/users/me").then((r) => r.json());
       } else {
-        const users = await fetch("http://localhost:8081/users/all").then((r) =>
+        const users = await apiFetch("/users/all").then((r) =>
           r.json()
         );
 
@@ -48,8 +45,6 @@ export function ProfilePage() {
             String(u.username || "").toLowerCase() ===
             String(username || "").toLowerCase()
         );
-
-        profileId = getStableId(profileUser);
       }
 
       if (!profileUser) {
@@ -58,24 +53,34 @@ export function ProfilePage() {
       }
 
       setUser(profileUser);
+      const stableId = getStableId(profileUser);
 
-      const followers = await fetch(
-        "http://localhost:8081/users/followers",
-        {
-          headers: { "X-User-Id": profileId },
-        }
+      const followers = await apiFetch(
+        `/users/${stableId}/followers`
       ).then((r) => r.json());
 
       setSubscriberCount(Array.isArray(followers) ? followers.length : 0);
 
-      const following = await fetch(
-        "http://localhost:8081/users/following",
-        {
-          headers: { "X-User-Id": profileId },
-        }
+      const following = await apiFetch(
+        `/users/${stableId}/following`
       ).then((r) => r.json());
 
       setSubscriptionCount(Array.isArray(following) ? following.length : 0);
+
+      const userPostsData = await apiFetch(`/posts/user/${stableId}`).then(r => r.json());
+      const postsArray = Array.isArray(userPostsData) ? userPostsData : [];
+      const mappedPosts = postsArray
+        .filter((p: any) => String(p.id) !== '1' && String(p.id) !== '2' && String(p.id) !== '3')
+        .map((post: any) => ({
+          ...post,
+          author: {
+            username: profileUser.username,
+            avatarUrl: profileUser.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${profileUser.username}`,
+            displayName: profileUser.displayName || profileUser.username
+          }
+        }));
+      setPosts(mappedPosts);
+
     } catch (e) {
       console.log(e);
     }
@@ -85,24 +90,17 @@ export function ProfilePage() {
 
   const refreshCounts = async () => {
     if (!user) return;
-
-    const profileId = username === "me" ? currentUserId || getStableId(user) : getStableId(user);
+    const stableId = getStableId(user);
 
     try {
-      const followers = await fetch(
-        "http://localhost:8081/users/followers",
-        {
-          headers: { "X-User-Id": profileId },
-        }
+      const followers = await apiFetch(
+        `/users/${stableId}/followers`
       ).then((r) => r.json());
 
       setSubscriberCount(Array.isArray(followers) ? followers.length : 0);
 
-      const following = await fetch(
-        "http://localhost:8081/users/following",
-        {
-          headers: { "X-User-Id": profileId },
-        }
+      const following = await apiFetch(
+        `/users/${stableId}/following`
       ).then((r) => r.json());
 
       setSubscriptionCount(Array.isArray(following) ? following.length : 0);
@@ -138,7 +136,7 @@ export function ProfilePage() {
         subscriptionCount,
         followingCount: subscriptionCount,
       }}
-      posts={[]}
+      posts={posts}
       isMe={isCurrentUser}
       onSubscriptionChange={handleSubscriptionChange}
       currentUserId={currentUserId || undefined}

@@ -1,6 +1,7 @@
 import { Avatar } from "../common/Avatar";
 import { ProfileStats } from "./ProfileStats";
 import { ProfileActions } from "./ProfileActions";
+import { FounderBadge } from "../common/FounderBadge";
 import type { PublicProfile } from "../../types";
 import styles from "./ProfileHeader.module.css";
 
@@ -38,6 +39,7 @@ export function ProfileHeader({
         <div className={styles.handleRow}>
           <h2 className={styles.h2}>
             @{user.username}
+            <FounderBadge username={user.username} />
           </h2>
         </div>
 

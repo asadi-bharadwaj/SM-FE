@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import { useNotificationStore } from "../stores/notificationStore";
+import { apiFetch } from "../lib/api";
+import { useNavigate } from "react-router-dom";
 
 type NotificationResponse = {
   id: number;
@@ -6,6 +9,7 @@ type NotificationResponse = {
   type: string;
   title: string;
   message: string;
+  url?: string;
   read: boolean;
   createdAt: string;
 };
@@ -13,21 +17,22 @@ type NotificationResponse = {
 export function NotificationsPage() {
   const [items, setItems] = useState<NotificationResponse[]>([]);
   const [loading, setLoading] = useState(true);
+  const { markAllRead } = useNotificationStore();
+  const navigate = useNavigate();
 
   const userId = localStorage.getItem("userId");
 
   useEffect(() => {
+    // Clear global unread badge when viewing this page
+    markAllRead();
+
     if (!userId) {
       setLoading(false);
       return;
     }
 
     // Fetch real notifications from the Notification Service
-    fetch(`http://localhost:8081/api/notifications?recipientId=${userId}`, {
-      headers: {
-        "X-User-Id": userId,
-      },
-    })
+    apiFetch(`/api/notifications?recipientId=${userId}`)
       .then((r) => r.json())
       .then((d) => {
         setItems(Array.isArray(d) ? d : []);
@@ -41,12 +46,22 @@ export function NotificationsPage() {
 
   const markAsRead = async (id: number) => {
     try {
-      await fetch(`http://localhost:8081/api/notifications/${id}/read`, {
+      await apiFetch(`/api/notifications/${id}/read`, {
         method: "PUT",
       });
       setItems(prev => prev.map(item => item.id === id ? { ...item, read: true } : item));
     } catch (e) {
       console.error(e);
+    }
+  };
+
+  const handleNotificationClick = (item: NotificationResponse) => {
+    if (!item.read) {
+      markAsRead(item.id);
+    }
+    
+    if (item.url) {
+      navigate(item.url);
     }
   };
 
@@ -93,14 +108,14 @@ export function NotificationsPage() {
       {items.map((item) => (
         <div
           key={item.id}
-          onClick={() => !item.read && markAsRead(item.id)}
+          onClick={() => handleNotificationClick(item)}
           style={{
             background: item.read ? "#0a0a0a" : "#111",
             border: item.read ? "1px solid #1a1a1a" : "1px solid #333",
             borderRadius: "16px",
             padding: "18px",
             marginBottom: "14px",
-            cursor: item.read ? "default" : "pointer",
+            cursor: "pointer",
             position: "relative",
           }}
         >

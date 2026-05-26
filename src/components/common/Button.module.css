@@ -18,11 +18,13 @@
 
 .primary {
   color: #fff;
-  background: var(--color-accent);
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  box-shadow: 0 4px 12px rgba(0, 198, 255, 0.15);
 }
 
 .primary:hover:not(:disabled) {
-  background: var(--color-accent-hover);
+  background: linear-gradient(135deg, #00d2ff, #ff6b6b);
+  box-shadow: 0 6px 20px rgba(0, 198, 255, 0.4);
 }
 
 .ghost {

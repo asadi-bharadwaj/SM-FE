@@ -1,25 +1,37 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { apiFetch } from "../lib/api";
 
 export function SearchPage() {
-  const [tab, setTab] = useState("feed");
+  const [tab, setTab] = useState("profiles");
   const [query, setQuery] = useState("");
   const [users, setUsers] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch("http://localhost:8081/users/all")
-      .then((r) => r.json())
-      .then((d) => setUsers(d))
-      .catch((e) => console.error(e));
-  }, []);
+    const handler = setTimeout(() => {
+      const endpoint = query.trim() ? `/users/search?q=${encodeURIComponent(query)}&limit=20` : '/users/all';
+      apiFetch(endpoint)
+        .then((r) => {
+          if (!r.ok) throw new Error("Failed to fetch");
+          return r.json();
+        })
+        .then((d) => {
+          if (Array.isArray(d)) {
+            setUsers(d);
+          } else {
+            console.error("Expected array, got:", d);
+            setUsers([]);
+          }
+        })
+        .catch((e) => {
+          console.error(e);
+          setUsers([]);
+        });
+    }, 300);
+    return () => clearTimeout(handler);
+  }, [query]);
 
-  const filtered = users.filter((u) => {
-    const username = (u.username || "").toLowerCase();
-    const displayName = (u.displayName || "").toLowerCase();
-    const q = query.trim().toLowerCase();
-
-    return username.includes(q) || displayName.includes(q);
-  });
+  const filtered = Array.isArray(users) ? users : [];
 
   const glowMove = (e: any) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -179,23 +191,6 @@ export function SearchPage() {
           }}
         >
           <button
-            onClick={() => setTab("feed")}
-            onMouseMove={glowMove}
-            className="lux-box lux-btn"
-            style={{
-              padding: "12px 20px",
-              borderRadius: "14px",
-              border: "1px solid #222",
-              cursor: "pointer",
-              fontWeight: 700,
-              background: tab === "feed" ? "#fff" : "#111",
-              color: tab === "feed" ? "#000" : "#fff",
-            }}
-          >
-            Feed
-          </button>
-
-          <button
             onClick={() => setTab("profiles")}
             onMouseMove={glowMove}
             className="lux-box lux-btn"
@@ -212,22 +207,6 @@ export function SearchPage() {
             Profiles
           </button>
         </div>
-
-        {tab === "feed" && (
-          <div
-            className="lux-box"
-            onMouseMove={glowMove}
-            style={{
-              background: "#111",
-              border: "1px solid #222",
-              borderRadius: "20px",
-              padding: "24px",
-              color: "#8e8e8e",
-            }}
-          >
-            Feed content coming soon.
-          </div>
-        )}
 
         {tab === "profiles" && (
           <div style={{ display: "grid", gap: "14px" }}>

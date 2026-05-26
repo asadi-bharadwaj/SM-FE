@@ -1,20 +1,20 @@
 .skeleton {
-  background: linear-gradient(
+  background: var(--glass-bg, #1a1a1a);
+  background-image: linear-gradient(
     90deg,
-    #262626 0%,
-    #363636 50%,
-    #262626 100%
+    rgba(255, 255, 255, 0) 0,
+    rgba(255, 255, 255, 0.04) 20%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.04) 80%,
+    rgba(255, 255, 255, 0) 100%
   );
+  background-repeat: no-repeat;
   background-size: 200% 100%;
-  animation: shimmer 1.2s ease-in-out infinite;
-  border-radius: var(--radius-sm);
+  animation: shimmerFlow 1.5s infinite linear;
+  border-radius: var(--radius-sm, 8px);
 }
 
-@keyframes shimmer {
-  0% {
-    background-position: 200% 0;
-  }
-  100% {
-    background-position: -200% 0;
-  }
+@keyframes shimmerFlow {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }

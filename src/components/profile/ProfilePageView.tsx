@@ -5,6 +5,8 @@ import { PostGrid } from "./PostGrid";
 import type { PublicProfile } from "../../types";
 import type { Post } from "../../types";
 import styles from "./ProfilePageView.module.css";
+import { apiFetch } from "../../lib/api";
+import { ChevronLeft } from "lucide-react";
 
 type Props = {
   user: PublicProfile;
@@ -27,6 +29,8 @@ export function ProfilePageView({
   const [loading, setLoading] =
     useState(false);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [savedPosts, setSavedPosts] = useState<Post[]>([]);
+  const [loadedSaved, setLoadedSaved] = useState(false);
 
   const nav = useNavigate();
 
@@ -44,17 +48,40 @@ export function ProfilePageView({
     }
   }, [user.id, actualIsMe, loggedInUserId]);
 
+  useEffect(() => {
+    if (tab === "saved" && isMe && !loadedSaved) {
+      loadSavedPosts();
+    }
+  }, [tab, isMe, loadedSaved]);
+
+  const loadSavedPosts = async () => {
+    try {
+      const res = await apiFetch("/posts/saved");
+      if (res.ok) {
+        const data = await res.json();
+        const savedArray = Array.isArray(data) ? data : [];
+        const mapped = savedArray.map((post: any) => ({
+          ...post,
+          author: {
+            ...post.author,
+            avatarUrl: post.author?.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${post.author?.username}`
+          }
+        }));
+        setSavedPosts(mapped);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoadedSaved(true);
+    }
+  };
+
   const checkSubscriptionStatus = async () => {
     if (!loggedInUserId || !user.id || actualIsMe) return;
     
     try {
-      const response = await fetch(
-        "http://localhost:8081/users/following",
-        {
-          headers: {
-            "X-User-Id": String(loggedInUserId),
-          },
-        }
+      const response = await apiFetch(
+        "/users/following"
       );
       
       if (!response.ok) return;
@@ -82,13 +109,10 @@ export function ProfilePageView({
         ? "DELETE"
         : "POST";
 
-      const res = await fetch(
-        `http://localhost:8081/users/follow/${user.id}`,
+      const res = await apiFetch(
+        `/users/follow/${user.id}`,
         {
           method,
-          headers: {
-            "X-User-Id": String(loggedInUserId),
-          },
         }
       );
 
@@ -108,6 +132,29 @@ export function ProfilePageView({
 
   return (
     <div className={styles.page}>
+      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px', gap: '16px' }}>
+        <button 
+          onClick={() => nav(-1)}
+          style={{
+            background: "none",
+            border: "none",
+            color: "#fff",
+            cursor: "pointer",
+            padding: "8px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: "50%",
+            transition: "background 0.2s"
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.1)")}
+          onMouseLeave={(e) => (e.currentTarget.style.background = "none")}
+        >
+          <ChevronLeft size={24} />
+        </button>
+        <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 700 }}>Profile</h2>
+      </div>
+
       <ProfileHeader
         user={user}
         postCount={posts.length}
@@ -151,11 +198,7 @@ export function ProfilePageView({
         </a>
       )}
 
-      <p className={styles.priceLine}>
-        {loading
-          ? "Updating..."
-          : "From $4.99/mo · full library for subscribers"}
-      </p>
+
 
       <div
         className={styles.tabs}
@@ -195,9 +238,13 @@ export function ProfilePageView({
 
       {tab === "saved" &&
         isMe && (
-          <p className={styles.savedEmpty}>
-            No saved posts yet.
-          </p>
+          savedPosts.length > 0 ? (
+            <PostGrid posts={savedPosts} />
+          ) : (
+            <p className={styles.savedEmpty}>
+              No saved posts yet.
+            </p>
+          )
         )}
     </div>
   );

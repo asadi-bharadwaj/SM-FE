@@ -12,6 +12,8 @@ export type Post = {
   createdAt: string
   tags: string[]
   visibility: PostVisibility
+  location?: string
+  musicTrack?: string
   tierId?: string
   /** If set, overrides computed lock from subscription + visibility */
   isLocked?: boolean

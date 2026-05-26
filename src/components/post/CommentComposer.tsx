@@ -19,6 +19,7 @@ export function CommentComposer({ post, disabled }: Props) {
       }}
     >
       <input
+        id={`commentInput-${post.id}`}
         className={styles.input}
         name="comment"
         placeholder="Add a comment…"

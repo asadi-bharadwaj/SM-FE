@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { INITIAL_ENGAGEMENT } from '../mocks/engagementSeed'
 import type { Comment, PublicProfile } from '../types'
+import { apiFetch } from '../lib/api'
 
 type ByPost = typeof INITIAL_ENGAGEMENT
 
@@ -10,7 +11,7 @@ const initialByPost: ByPost = JSON.parse(
 
 async function notify(recipientId: string, type: string, title: string, message: string) {
   try {
-    await fetch("http://localhost:8081/api/notifications", {
+    await apiFetch("/api/notifications", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

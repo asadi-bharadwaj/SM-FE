@@ -1,6 +1,9 @@
+import { useState } from 'react'
 import { Bookmark, Heart, MessageCircle, Send } from 'lucide-react'
 import { IconButton } from '../common/IconButton'
+import { ShareModal } from './ShareModal'
 import { usePostEngagement } from '../../hooks/usePostEngagement'
+import { playTickSound } from '../../lib/audio'
 import styles from './PostActions.module.css'
 
 type Props = {
@@ -10,14 +13,25 @@ type Props = {
 }
 
 export function PostActions({ post, disabled, onOpenComments }: Props) {
-  const { liked, toggleLike } = usePostEngagement(post)
+  const { liked, toggleLike, isSaved, toggleSave } = usePostEngagement(post)
+  const [isShareOpen, setIsShareOpen] = useState(false)
+
+  const handleShare = () => {
+    setIsShareOpen(true)
+  }
+
   return (
     <div className={styles.row}>
       <div className={styles.left}>
         <IconButton
           type="button"
           label={liked ? 'Unlike' : 'Like'}
-          onClick={() => !disabled && toggleLike()}
+          onClick={() => {
+            if (!disabled) {
+              if (!liked) playTickSound();
+              toggleLike();
+            }
+          }}
           className={disabled ? styles.muted : undefined}
         >
           <Heart
@@ -34,13 +48,29 @@ export function PostActions({ post, disabled, onOpenComments }: Props) {
         >
           <MessageCircle size={28} strokeWidth={1.75} />
         </IconButton>
-        <IconButton type="button" label="Share">
+        <IconButton type="button" label="Share" onClick={handleShare}>
           <Send size={28} strokeWidth={1.75} />
         </IconButton>
       </div>
-      <IconButton type="button" label="Save" className={disabled ? styles.muted : undefined}>
-        <Bookmark size={28} strokeWidth={1.75} />
+      <IconButton 
+        type="button" 
+        label={isSaved ? 'Unsave' : 'Save'} 
+        className={disabled ? styles.muted : undefined}
+        onClick={() => !disabled && toggleSave()}
+      >
+        <Bookmark 
+          size={28} 
+          strokeWidth={1.75} 
+          fill={isSaved ? 'currentColor' : 'none'}
+        />
       </IconButton>
+
+      {isShareOpen && (
+        <ShareModal 
+          postId={post.id} 
+          onClose={() => setIsShareOpen(false)} 
+        />
+      )}
     </div>
   )
 }

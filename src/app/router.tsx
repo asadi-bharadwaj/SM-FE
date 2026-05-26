@@ -12,9 +12,15 @@ import { NotFoundPage } from '../pages/NotFoundPage'
 import { PlaceholderPage } from '../pages/PlaceholderPage'
 import { MessagesInboxPage } from '../pages/MessagesInboxPage'
 import { MessageThreadPage } from '../pages/MessageThreadPage'
+import { GroupDetailsPage } from '../pages/GroupDetailsPage'
+import { CallsPage } from '../pages/CallsPage'
 
 import Login from '../pages/Login'
 import Register from '../pages/Register'
+import ForgotPassword from '../pages/ForgotPassword'
+import ResetPassword from '../pages/ResetPassword'
+import { PrivacyPolicy } from '../pages/PrivacyPolicy'
+import { TermsOfService } from '../pages/TermsOfService'
 
 const isLoggedIn = () => {
   return localStorage.getItem("token") !== null
@@ -24,6 +30,22 @@ export const router = createBrowserRouter([
   {
     path: '/login',
     element: isLoggedIn() ? <Navigate to="/" /> : <Login />
+  },
+  {
+    path: '/privacy-policy',
+    element: <PrivacyPolicy />
+  },
+  {
+    path: '/terms',
+    element: <TermsOfService />
+  },
+  {
+    path: '/forgot-password',
+    element: isLoggedIn() ? <Navigate to="/" /> : <ForgotPassword />
+  },
+  {
+    path: '/reset-password',
+    element: isLoggedIn() ? <Navigate to="/" /> : <ResetPassword />
   },
 
   {
@@ -42,7 +64,9 @@ export const router = createBrowserRouter([
       { path: 'u/:username', element: <ProfilePage /> },
       { path: 'p/:postId', element: <PostPage /> },
       { path: 'messages', element: <MessagesInboxPage /> },
+      { path: 'calls', element: <CallsPage /> },
       { path: 'messages/:threadId', element: <MessageThreadPage /> },
+      { path: 'messages/:threadId/details', element: <GroupDetailsPage /> },
       { path: 'notifications', element: <NotificationsPage /> },
       { path: 'create', element: <CreatePostPage /> },
       { path: 'reels', element: <PlaceholderPage /> },

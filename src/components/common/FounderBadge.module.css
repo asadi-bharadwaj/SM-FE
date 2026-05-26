@@ -1,0 +1,26 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 6px;
+  padding: 2px 6px 2px 4px;
+  background: linear-gradient(135deg, #262626, #121212);
+  border: 1px solid #525252; /* Sleek Grey Border */
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  vertical-align: middle;
+  transform: translateY(-1px);
+}
+
+.icon {
+  color: #a3a3a3; /* Rich Grey */
+}
+
+.label {
+  color: #a3a3a3;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  line-height: 1;
+}

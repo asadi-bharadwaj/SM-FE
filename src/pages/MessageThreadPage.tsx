@@ -3,6 +3,7 @@ import { useParams, useSearchParams } from 'react-router-dom';
 import { useChatStore } from '../stores/chatStore';
 import { ChatThread } from '../components/chat/ChatThread';
 import { NotFoundPage } from './NotFoundPage';
+import { apiFetch } from "../lib/api";
 
 export function MessageThreadPage() {
   const { threadId } = useParams();
@@ -10,13 +11,14 @@ export function MessageThreadPage() {
   const recipientId = searchParams.get('recipientId');
   const userId = localStorage.getItem('userId');
   
-  const { loadHistory, messages, subscribeToThread, connected } = useChatStore();
+  const { loadHistory, messages, subscribeToThread, connected, clearUnread } = useChatStore();
 
   useEffect(() => {
     if (threadId) {
       loadHistory(threadId);
+      clearUnread(threadId); // Instantly clear the red dot locally
     }
-  }, [threadId, loadHistory]);
+  }, [threadId, loadHistory, clearUnread]);
 
   useEffect(() => {
     if (threadId && connected) {
@@ -25,7 +27,7 @@ export function MessageThreadPage() {
       
       // Mark as read
       if (userId) {
-        fetch(`http://localhost:8081/chat/read/${threadId}/${userId}`, { method: 'PUT' })
+        apiFetch(`/chat/read/${threadId}/${userId}`, { method: 'PUT' })
           .catch(e => console.error("Failed to mark as read", e));
       }
       return () => {
@@ -35,14 +37,17 @@ export function MessageThreadPage() {
     }
   }, [threadId, connected, subscribeToThread, userId]);
 
-  if (!threadId || !userId || !recipientId) return <NotFoundPage />;
+  const isGroup = threadId?.startsWith('GROUP_');
+
+  if (!threadId || !userId) return <NotFoundPage />;
+  if (!isGroup && !recipientId) return <NotFoundPage />;
 
   return (
-    <div style={{ height: 'calc(100vh - 100px)' }}>
+    <div style={{ height: 'calc(100dvh - 100px)' }}>
       <ChatThread 
         threadId={threadId} 
         userId={userId} 
-        recipientId={recipientId}
+        recipientId={recipientId || threadId} // Fallback to threadId for groups
         messages={messages}
       />
     </div>

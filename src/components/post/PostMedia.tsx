@@ -13,12 +13,18 @@ type Props = {
 export function PostMedia({ post, locked, onSubscribe, className }: Props) {
   return (
     <div className={cn(styles.frame, className)}>
-      {post.mediaType === 'image' ? (
-        <img
-          className={cn(styles.media, locked && styles.blur)}
-          src={post.mediaUrl}
-          alt=""
-        />
+      {(!post.mediaType || String(post.mediaType).toLowerCase() === 'image') ? (
+        <>
+          <div 
+            className={styles.blurBackground} 
+            style={{ backgroundImage: `url(${post.mediaUrl})` }}
+          />
+          <img
+            className={cn(styles.media, locked && styles.blur)}
+            src={post.mediaUrl}
+            alt=""
+          />
+        </>
       ) : (
         <div className={styles.videoPlaceholder}>Video</div>
       )}

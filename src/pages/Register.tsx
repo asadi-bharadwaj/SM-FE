@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import QuantumCanvas from '../components/QuantumCanvas';
 import QuantumForm from '../components/QuantumForm';
+import { apiFetch } from "../lib/api";
 
 export default function Register() {
   const [step, setStep] = useState(1); // 1: Details, 2: OTP
@@ -38,7 +39,7 @@ export default function Register() {
 
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:8081/auth/register/start", {
+      const res = await apiFetch("/auth/register/start", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -68,7 +69,7 @@ export default function Register() {
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:8081/auth/register/complete", {
+      const res = await apiFetch("/auth/register/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

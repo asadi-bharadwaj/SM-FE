@@ -1,6 +1,5 @@
 import { create } from 'zustand'
-
-const BASE_URL = 'http://localhost:8081'
+import { apiFetch } from '../lib/api'
 
 type State = {
   subscribedAuthorIds: Set<string>
@@ -27,14 +26,7 @@ export const useSubscriptionStore = create<State>((set, get) => ({
     }
 
     try {
-      const response = await fetch(
-        `${BASE_URL}/users/following`,
-        {
-          headers: {
-            'X-User-Id': currentUserId,
-          },
-        }
-      )
+      const response = await apiFetch('/users/following')
 
       if (!response.ok) {
         throw new Error('Failed to load subscriptions')
@@ -71,15 +63,9 @@ export const useSubscriptionStore = create<State>((set, get) => ({
     const already = get().subscribedAuthorIds.has(String(authorId))
 
     try {
-      const response = await fetch(
-        `${BASE_URL}/users/follow/${creatorId}`,
-        {
-          method: already ? 'DELETE' : 'POST',
-          headers: {
-            'X-User-Id': userId,
-          },
-        }
-      )
+      const response = await apiFetch(`/users/follow/${creatorId}`, {
+        method: already ? 'DELETE' : 'POST',
+      })
 
       if (!response.ok) {
         throw new Error('API failed')

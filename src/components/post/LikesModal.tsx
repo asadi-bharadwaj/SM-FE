@@ -12,9 +12,30 @@ type Props = {
   onClose: () => void
 }
 
+import { useEffect, useState } from 'react'
+import { apiFetch } from '../../lib/api'
+
 export function LikesModal({ postId, likeCount, onClose }: Props) {
   useLockBodyScroll(true)
-  const likers = getMockLikersForPost(postId, Math.min(likeCount, 20))
+  const [likers, setLikers] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchLikers = async () => {
+      try {
+        const res = await apiFetch(`/posts/engagement/${postId}/likers`)
+        if (res.ok) {
+          const data = await res.json()
+          setLikers(data.users || [])
+        }
+      } catch (err) {
+        console.error('Failed to fetch likers', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchLikers()
+  }, [postId])
 
   return (
     <div
@@ -42,19 +63,25 @@ export function LikesModal({ postId, likeCount, onClose }: Props) {
             <X size={22} />
           </IconButton>
         </div>
-        <ul className={styles.list}>
-          {likers.map((u) => (
-            <li key={u.id} className={styles.row}>
-              <UserLink user={u} className={styles.who}>
-                <Avatar src={u.avatarUrl} alt="" size="md" />
-                <div>
-                  <div className={styles.name}>{u.username}</div>
-                  <div className={styles.dn}>{u.displayName}</div>
-                </div>
-              </UserLink>
-            </li>
-          ))}
-        </ul>
+        {loading ? (
+          <div style={{ padding: '20px', textAlign: 'center', color: '#888' }}>Loading...</div>
+        ) : likers.length === 0 ? (
+          <div style={{ padding: '20px', textAlign: 'center', color: '#888' }}>No likes yet</div>
+        ) : (
+          <ul className={styles.list}>
+            {likers.map((u) => (
+              <li key={u.id} className={styles.row}>
+                <UserLink user={u} className={styles.who}>
+                  <Avatar src={u.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${u.username}`} alt="" size="md" />
+                  <div>
+                    <div className={styles.name}>{u.username}</div>
+                    <div className={styles.dn}>{u.displayName}</div>
+                  </div>
+                </UserLink>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   )

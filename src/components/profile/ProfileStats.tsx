@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styles from "./ProfileStats.module.css";
+import { apiFetch } from "../../lib/api";
 
 type Props = {
   postCount: number;
@@ -47,32 +48,22 @@ export function ProfileStats({
 
   const loadAll = async () => {
     try {
-      const allUsers = await fetch(
-        "http://localhost:8081/users/all"
+      const allUsers = await apiFetch(
+        "/users/all"
       ).then((r) => r.json());
 
       setUsers(allUsers);
 
-      const subs = await fetch(
-        "http://localhost:8081/users/followers",
-        {
-          headers: {
-            "X-User-Id": effectiveUserId || "",
-          },
-        }
+      const subs = await apiFetch(
+        `/users/${effectiveUserId}/followers`
       ).then((r) => r.json());
 
       const subsArray = Array.isArray(subs) ? subs : [];
       setFollowers(subsArray);
       setDisplaySubscriberCount(subsArray.length);
 
-      const followingRes = await fetch(
-        "http://localhost:8081/users/following",
-        {
-          headers: {
-            "X-User-Id": effectiveUserId || "",
-          },
-        }
+      const followingRes = await apiFetch(
+        `/users/${effectiveUserId}/following`
       ).then((r) => r.json());
 
       const followingArray = Array.isArray(followingRes)

@@ -32,6 +32,22 @@ function IntroScreen() {
             50% { transform: translateY(-20px); opacity: .45; }
             100% { transform: translateY(-40px); opacity: 0; }
           }
+          
+          .intro-title {
+            font-size: 56px;
+            line-height: 1.15;
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            margin-bottom: 18px;
+            animation: fadeUp 1.4s ease forwards;
+          }
+          
+          @media (max-width: 768px) {
+            .intro-title {
+              font-size: 32px;
+              letter-spacing: -0.5px;
+            }
+          }
         `}
       </style>
 
@@ -97,19 +113,10 @@ function IntroScreen() {
               animation: "fadeUp 1.2s ease forwards",
             }}
           >
-            SHOWME
+            ANTIMATTER
           </div>
 
-          <h1
-            style={{
-              fontSize: "56px",
-              lineHeight: 1.15,
-              fontWeight: 800,
-              letterSpacing: "-1.5px",
-              marginBottom: "18px",
-              animation: "fadeUp 1.4s ease forwards",
-            }}
-          >
+          <h1 className="intro-title">
             The future belongs to the bold.
             <br />
            
@@ -162,11 +169,9 @@ function RootApp() {
             @keyframes appFadeIn {
               from {
                 opacity: 0;
-                transform: scale(1.01);
               }
               to {
                 opacity: 1;
-                transform: scale(1);
               }
             }
           `}
@@ -202,7 +207,9 @@ root.render(
   </StrictMode>
 );
 
-// Load users after app starts
-loadUsers().catch((err) => {
-  console.error("Users load failed:", err);
-});
+// Load users after app starts, only if logged in
+if (localStorage.getItem("token")) {
+  loadUsers().catch((err) => {
+    console.error("Users load failed:", err);
+  });
+}

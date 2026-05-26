@@ -1,0 +1,241 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #000;
+  overflow-y: auto;
+  color: #fff;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  background: #111;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 1px solid #222;
+}
+
+.backBtn {
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 8px;
+  margin-right: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background 0.2s;
+}
+
+.backBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+  background: linear-gradient(to bottom, #111, #000);
+  border-bottom: 1px solid #222;
+}
+
+.avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  font-weight: 800;
+  margin-bottom: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.groupName {
+  font-size: 28px;
+  font-weight: 800;
+  margin: 0 0 8px 0;
+}
+
+.groupMeta {
+  color: #888;
+  font-size: 16px;
+}
+
+.section {
+  padding: 20px;
+  border-bottom: 1px solid #222;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #888;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.infoRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 12px 0;
+}
+
+.infoIcon {
+  color: #00c6ff;
+  padding-top: 2px;
+}
+
+.infoLabel {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 2px;
+}
+
+.infoValue {
+  font-size: 16px;
+  color: #eee;
+}
+
+.memberList {
+  display: flex;
+  flex-direction: column;
+}
+
+.memberRow {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.memberRow:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.memberAvatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #00c6ff, #0072ff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  margin-right: 16px;
+}
+
+.memberInfo {
+  flex: 1;
+}
+
+.memberName {
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.memberUsername {
+  font-size: 13px;
+  color: #666;
+}
+
+.youTag {
+  background: rgba(0, 198, 255, 0.1);
+  color: #00c6ff;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.adminBadge {
+  font-size: 11px;
+  color: #00ff00;
+  border: 1px solid rgba(0, 255, 0, 0.3);
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+.actions {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.actionBtn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  background: #111;
+  border: 1px solid #222;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.actionBtn:hover {
+  background: #1a1a1a;
+  border-color: #333;
+}
+
+.actionBtn.danger {
+  color: #ff4d4d;
+}
+
+.actionBtn.danger:hover {
+  background: rgba(255, 77, 77, 0.1);
+  border-color: rgba(255, 77, 77, 0.2);
+}
+
+.loading, .error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 20px;
+  color: #888;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(0, 198, 255, 0.1);
+  border-top-color: #00c6ff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

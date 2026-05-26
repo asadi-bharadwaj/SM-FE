@@ -1,8 +1,12 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { useChatStore } from "../stores/chatStore";
-import { useEffect, useRef } from "react";
+import { useNotificationStore } from "../stores/notificationStore";
+import { useEffect, useRef, useState } from "react";
+import logo from "../assets/antimatter-logo.png";
+import { apiFetch } from "../lib/api";
+import { GlobalCallManager } from "../components/chat/GlobalCallManager";
 
-function Item({ to, label }: { to: string; label: string }) {
+function Item({ to, label, badge }: { to: string; label: string; badge?: number }) {
   const { pathname } = useLocation();
 
   const active =
@@ -11,25 +15,20 @@ function Item({ to, label }: { to: string; label: string }) {
   return (
     <Link
       to={to}
-      className="lux-nav"
+      className={`lux-nav ${active ? "active" : ""}`}
       onMouseMove={(e) => {
         const rect = e.currentTarget.getBoundingClientRect();
-
-        e.currentTarget.style.setProperty(
-          "--x",
-          `${e.clientX - rect.left}px`
-        );
-
-        e.currentTarget.style.setProperty(
-          "--y",
-          `${e.clientY - rect.top}px`
-        );
+        e.currentTarget.style.setProperty("--x", `${e.clientX - rect.left}px`);
+        e.currentTarget.style.setProperty("--y", `${e.clientY - rect.top}px`);
       }}
       style={{
         position: "relative",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
         padding: "15px 10px",
-        color: active ? "#ffffff" : "#9f9f9f",
         textDecoration: "none",
+        color: active ? "#ffffff" : "#9f9f9f",
         fontWeight: active ? 700 : 500,
         fontSize: "15px",
         letterSpacing: "0.25px",
@@ -38,71 +37,43 @@ function Item({ to, label }: { to: string; label: string }) {
         transition: "all 0.25s ease",
       }}
     >
-      <span
-        style={{
+      <span style={{ position: "relative", zIndex: 2 }}>{label}</span>
+      
+      {/* Stars Container */}
+      <div className="stars-container">
+        {[...Array(6)].map((_, i) => (
+          <div key={i} className="star-particle" />
+        ))}
+      </div>
+      
+      {badge && badge > 0 ? (
+        <span style={{
+          background: "#ff4d4d",
+          color: "#fff",
+          fontSize: "10px",
+          fontWeight: 800,
+          minWidth: "18px",
+          height: "18px",
+          borderRadius: "50%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
           position: "relative",
           zIndex: 2,
-        }}
-      >
-        {label}
-      </span>
+          boxShadow: "0 0 10px rgba(255, 77, 77, 0.4)"
+        }}>
+          {badge > 9 ? "9+" : badge}
+        </span>
+      ) : null}
 
-      {/* cursor glow */}
       <span
         className="mouse-light"
         style={{
           position: "absolute",
           inset: 0,
-          background:
-            "radial-gradient(circle at var(--x,50%) var(--y,50%), rgba(255,255,255,0.16), transparent 45%)",
+          background: "radial-gradient(circle at var(--x,50%) var(--y,50%), rgba(255,255,255,0.16), transparent 45%)",
           opacity: 0,
           transition: "opacity 0.18s ease",
-          zIndex: 1,
-        }}
-      />
-
-      {/* star dust */}
-      <span
-        className="dust dust1"
-        style={{
-          position: "absolute",
-          width: "3px",
-          height: "3px",
-          borderRadius: "50%",
-          background: "rgba(255,255,255,0.85)",
-          left: "24%",
-          top: "35%",
-          opacity: 0,
-          zIndex: 1,
-        }}
-      />
-
-      <span
-        className="dust dust2"
-        style={{
-          position: "absolute",
-          width: "2px",
-          height: "2px",
-          borderRadius: "50%",
-          background: "rgba(255,255,255,0.75)",
-          left: "58%",
-          top: "55%",
-          opacity: 0,
-          zIndex: 1,
-        }}
-      />
-
-      <span
-        className="dust dust3"
-        style={{
-          position: "absolute",
-          width: "2px",
-          height: "2px",
-          borderRadius: "50%",
-          background: "rgba(255,255,255,0.8)",
-          left: "78%",
-          top: "28%",
-          opacity: 0,
           zIndex: 1,
         }}
       />
@@ -111,69 +82,210 @@ function Item({ to, label }: { to: string; label: string }) {
 }
 
 export function AppLayout() {
-  const { connect, disconnect } = useChatStore();
+  const { connect: connectChat, unreadThreads } = useChatStore();
+  const { connect: connectNotif, unreadCount, notifications } = useNotificationStore();
+  const [toast, setToast] = useState<any>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  
   const userId = localStorage.getItem("userId");
   const connStarted = useRef(false);
 
   useEffect(() => {
-    if (userId && !connStarted.current) {
+    if (!userId) {
+      connStarted.current = false;
+    } else if (userId && !connStarted.current) {
       connStarted.current = true;
-      connect(userId);
+      connectChat(userId);
+      connectNotif(userId);
     }
-    // Only disconnect on logout or refresh
-  }, [userId, connect]);
+  }, [userId, connectChat, connectNotif]);
+
+  // Toast effect for new notifications
+  useEffect(() => {
+    if (notifications.length > 0) {
+      const latest = notifications[0];
+      setToast(latest);
+      const timer = setTimeout(() => setToast(null), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [notifications]);
+
+  // Close menu on navigation
+  const { pathname } = useLocation();
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
 
   return (
     <>
       <style>
         {`
+          .lux-nav {
+            font-family: 'Outfit', sans-serif;
+            transition: color 0.25s ease, transform 0.25s ease;
+          }
           .lux-nav:hover {
             color: #fff !important;
             transform: translateX(6px);
           }
-
           .lux-nav:hover .mouse-light {
             opacity: 1 !important;
           }
+          
+          .dynamic-island {
+            position: fixed;
+            top: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px 24px;
+            border-radius: 30px;
+            color: #fff;
+            z-index: 9999;
+            min-width: 200px;
+            max-width: 400px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5), 0 0 20px rgba(0, 198, 255, 0.15);
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            animation: islandDrop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+            text-align: center;
+          }
+          @keyframes islandDrop {
+            0% { transform: translate(-50%, -40px) scale(0.8); opacity: 0; }
+            100% { transform: translate(-50%, 0) scale(1); opacity: 1; }
+          }
+          
+          .page-transition-enter {
+            animation: fadeSlideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+          }
+          @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+          .stars-container {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+          }
+          .lux-nav:hover .stars-container {
+            opacity: 1;
+          }
+          .star-particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 4px #fff, 0 0 8px #00c6ff;
+            opacity: 0;
+          }
+          .lux-nav:hover .star-particle {
+            animation: star-sparkle 1.5s infinite ease-in-out;
+          }
+          .star-particle:nth-child(1) { top: 20%; left: 30%; animation-delay: 0.1s; }
+          .star-particle:nth-child(2) { top: 60%; left: 80%; animation-delay: 0.4s; }
+          .star-particle:nth-child(3) { top: 10%; left: 70%; animation-delay: 0.7s; }
+          .star-particle:nth-child(4) { top: 80%; left: 20%; animation-delay: 1.0s; }
+          .star-particle:nth-child(5) { top: 40%; left: 50%; animation-delay: 1.3s; }
+          .star-particle:nth-child(6) { top: 70%; left: 90%; animation-delay: 0.2s; }
 
-          .lux-nav:hover .dust1 {
-            animation: sparkle 1.2s infinite;
+          @keyframes star-sparkle {
+            0% { transform: scale(0) rotate(0deg); opacity: 0; }
+            50% { transform: scale(1.2) rotate(180deg); opacity: 0.8; }
+            100% { transform: scale(0) rotate(360deg); opacity: 0; }
+          }
+          
+          .app-wrapper {
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+          }
+          .app-sidebar {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 28px 22px;
+            border-right: 1px solid var(--glass-border);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            z-index: 50;
+            background: var(--glass-bg);
+            transition: transform 0.3s ease;
+          }
+          .mobile-header {
+            display: none;
+          }
+          .mobile-overlay {
+            display: none;
           }
 
-          .lux-nav:hover .dust2 {
-            animation: sparkle 1.6s infinite;
-          }
-
-          .lux-nav:hover .dust3 {
-            animation: sparkle 1.4s infinite;
-          }
-
-          @keyframes sparkle {
-            0% {
-              opacity: 0;
-              transform: scale(0.5) translateY(0px);
+          @media (max-width: 768px) {
+            .app-wrapper {
+              display: flex;
+              flex-direction: column;
             }
-            50% {
-              opacity: 1;
-              transform: scale(1.5) translateY(-4px);
+            .app-sidebar {
+              position: fixed;
+              left: 0;
+              top: 0;
+              width: 260px;
+              background: rgba(10, 10, 10, 0.95);
+              transform: translateX(-100%);
             }
-            100% {
-              opacity: 0;
-              transform: scale(0.6) translateY(-8px);
+            .app-sidebar.open {
+              transform: translateX(0);
+            }
+            .mobile-header {
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              padding: 16px 20px;
+              border-bottom: 1px solid var(--glass-border);
+              position: sticky;
+              top: 0;
+              background: var(--glass-bg);
+              backdrop-filter: blur(var(--glass-blur));
+              -webkit-backdrop-filter: blur(var(--glass-blur));
+              z-index: 40;
+            }
+            .mobile-overlay.open {
+              display: block;
+              position: fixed;
+              inset: 0;
+              background: rgba(0,0,0,0.6);
+              backdrop-filter: blur(4px);
+              z-index: 45;
+            }
+            .main-content {
+              padding: 16px !important;
             }
           }
         `}
       </style>
 
+      {/* Global Call UI */}
+      <GlobalCallManager />
+
+      {toast && (
+        <div className="dynamic-island">
+          <div style={{ fontWeight: 700, fontSize: "14px", color: "#00c6ff" }}>{toast.title}</div>
+          <div style={{ fontSize: "13px", color: "#ccc" }}>{toast.message}</div>
+        </div>
+      )}
+
       {/* Minimalist Background Effects */}
       <div className="minimalist-canvas">
-        {/* Floating shapes */}
-        <div className="floating-shape" style={{ top: '10%', left: '10%' }} />
-        <div className="floating-shape" style={{ top: '20%', left: '60%' }} />
-        <div className="floating-shape" style={{ top: '60%', left: '20%' }} />
-        <div className="floating-shape" style={{ top: '80%', left: '70%' }} />
-        <div className="floating-shape" style={{ top: '30%', left: '80%' }} />
-
         {/* Particle dots */}
         <div className="particle-dots">
           {Array.from({ length: 35 }, (_, i) => (
@@ -190,34 +302,48 @@ export function AppLayout() {
         </div>
       </div>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "220px 1fr",
-          minHeight: "100vh",
-          background: "transparent",
-          color: "#fff",
-          position: "relative",
-          zIndex: 1,
-        }}
-      >
-        <aside
-          style={{
-            padding: "28px 22px",
-            borderRight: "1px solid rgba(255,255,255,0.06)",
-            backdropFilter: "blur(8px)",
-          }}
-        >
-          <h2
+      <div className="app-wrapper">
+        
+        {/* Mobile Header (Hidden on Desktop) */}
+        <header className="mobile-header">
+          <Link to="/" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none", color: "inherit" }}>
+            <img src={logo} alt="AntiMatter" style={{ width: "32px", height: "32px", borderRadius: "6px" }} />
+            <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: "20px", fontWeight: 800, letterSpacing: "-0.5px" }}>AntiMatter</span>
+          </Link>
+          <button 
+            onClick={() => setMobileMenuOpen(true)}
+            style={{ background: "none", border: "none", color: "#fff", cursor: "pointer", padding: "8px" }}
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+        </header>
+
+        {/* Mobile Overlay */}
+        <div 
+          className={`mobile-overlay ${mobileMenuOpen ? 'open' : ''}`}
+          onClick={() => setMobileMenuOpen(false)}
+        />
+
+        <aside className={`app-sidebar ${mobileMenuOpen ? 'open' : ''}`}>
+          <Link
+            to="/"
             style={{
               marginBottom: "34px",
-              fontSize: "24px",
-              fontWeight: 800,
-              letterSpacing: "-0.5px",
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              paddingTop: "10px",
+              textDecoration: "none",
+              color: "inherit"
             }}
           >
-            ShowMe
-          </h2>
+            <img src={logo} alt="AntiMatter" style={{ width: "40px", height: "40px", borderRadius: "8px" }} />
+            <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: "24px", fontWeight: 800, letterSpacing: "-0.5px" }}>AntiMatter</span>
+          </Link>
 
           <div
             style={{
@@ -226,14 +352,29 @@ export function AppLayout() {
               gap: "6px",
             }}
           >
-            <Item to="/" label="Home" />
+            <Item to="/" label="Discover" />
+            <Item to="/feed" label="Feed" />
+            <Item to="/messages" label="Messages" badge={unreadThreads.size} />
+            <Item to="/calls" label="Calls" />
+            <Item to="/notifications" label="Notifications" badge={unreadCount} />
             <Item to="/u/me" label="Profile" />
-            <Item to="/messages" label="Messages" />
-            <Item to="/notifications" label="Notifications" />
+            <Item to="/create" label="Create Post" />
             <Item to="/settings" label="Settings" />
 
             <button
-              onClick={() => {
+              onClick={async () => {
+                const refreshToken = localStorage.getItem("refreshToken");
+                if (refreshToken) {
+                  try {
+                    await apiFetch("/auth/logout", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ refreshToken })
+                    });
+                  } catch (e) {
+                    console.error("Logout failed on server", e);
+                  }
+                }
                 localStorage.removeItem("token");
                 localStorage.removeItem("refreshToken");
                 localStorage.removeItem("userId");
@@ -280,11 +421,14 @@ export function AppLayout() {
         </aside>
 
         <main
+          className="main-content"
           style={{
             padding: "28px",
           }}
         >
-          <Outlet />
+          <div key={pathname} className="page-transition-enter">
+            <Outlet />
+          </div>
         </main>
       </div>
     </>

@@ -37,6 +37,7 @@ export const MOCK_THREADS: Thread[] = [
     id: t1id,
     participants: [u1, me],
     lastMessage: {
+      id: 'm3',
       body: 'New drop Friday.',
       createdAt: initialMessages1[initialMessages1.length - 1]!.createdAt,
       senderId: 'u1',
@@ -48,6 +49,7 @@ export const MOCK_THREADS: Thread[] = [
     id: t2id,
     participants: [u2, me],
     lastMessage: {
+      id: 'm4',
       body: 'Pro tier Figma is live.',
       createdAt: initialMessages2[initialMessages2.length - 1]!.createdAt,
       senderId: 'u2',
@@ -77,8 +79,9 @@ export function appendMessage(threadId: string, body: string, senderId: string) 
     body,
     createdAt: new Date().toISOString(),
   }
+  if (!t.messages) t.messages = []
   t.messages.push(msg)
-  t.lastMessage = { body, createdAt: msg.createdAt, senderId }
+  t.lastMessage = { id: msg.id, body, createdAt: msg.createdAt, senderId }
   t.unreadCount = 0
   threads = [...threads]
   return getThread(threadId)

@@ -14,14 +14,14 @@ export function PostGrid({ posts }: Props) {
     <ul className={styles.grid} aria-label="Post grid">
       {posts.map((p) => (
         <li key={p.id}>
-          <PostGridItemWrapper post={p} />
+          <PostGridItemWrapper post={p} contextPosts={posts} />
         </li>
       ))}
     </ul>
   )
 }
 
-function PostGridItemWrapper({ post }: { post: Post }) {
+function PostGridItemWrapper({ post, contextPosts }: { post: Post, contextPosts: Post[] }) {
   const locked = useIsPostLocked(post)
-  return <PostGridItem post={post} locked={locked} />
+  return <PostGridItem post={post} locked={locked} contextPosts={contextPosts} />
 }

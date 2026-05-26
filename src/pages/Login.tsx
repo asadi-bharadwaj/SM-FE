@@ -2,22 +2,47 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import QuantumCanvas from '../components/QuantumCanvas';
 import QuantumForm from '../components/QuantumForm';
+import { apiFetch } from "../lib/api";
+import { UAParser } from 'ua-parser-js';
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const getSimpleDeviceInfo = () => {
+    const parser = new UAParser(navigator.userAgent);
+    const browser = parser.getBrowser();
+    const os = parser.getOS();
+    
+    let deviceStr = "Unknown Device";
+    if (os.name === 'Mac OS' || os.name === 'iOS') {
+        deviceStr = 'MacBook';
+    } else if (os.name === 'Windows') {
+        deviceStr = 'Windows';
+    } else if (os.name === 'Linux') {
+        deviceStr = 'Linux';
+    } else if (os.name === 'Android') {
+        deviceStr = 'Android';
+    }
+    
+    return `Web Browser (${deviceStr}, ${browser.name || 'Unknown Browser'})`;
+  };
 
   const login = async (data: Record<string, string>) => {
     setLoading(true);
     setError("");
 
     try {
-      const res = await fetch("http://localhost:8081/auth/login", {
+      const res = await apiFetch("/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email: data.email, password: data.password }),
+        body: JSON.stringify({ 
+          email: data.email, 
+          password: data.password, 
+          deviceInfo: getSimpleDeviceInfo()
+        }),
       });
 
       if (res.ok) {
@@ -27,7 +52,8 @@ export default function Login() {
         localStorage.setItem("userId", responseData.id);
         window.location.href = "/u/me";
       } else {
-        setError("Invalid credentials. Please check your email and password.");
+        const errData = await res.json().catch(() => ({}));
+        setError(errData.message || "Invalid credentials.");
       }
     } catch (err) {
       setError("Connection failed. Please try again.");
@@ -64,12 +90,19 @@ export default function Login() {
             loading={loading}
             error={error}
             footer={
-              <>
-                Don't have an account?{" "}
-                <Link to="/register" style={{ color: 'var(--accent-cyan)' }}>
-                  Create Account
-                </Link>
-              </>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center' }}>
+                <div>
+                  <Link to="/forgot-password" style={{ color: 'var(--text-secondary)', textDecoration: 'underline', fontSize: '14px' }}>
+                    Forgot Password?
+                  </Link>
+                </div>
+                <div>
+                  Don't have an account?{" "}
+                  <Link to="/register" style={{ color: 'var(--accent-cyan)' }}>
+                    Create Account
+                  </Link>
+                </div>
+              </div>
             }
           />
         </div>

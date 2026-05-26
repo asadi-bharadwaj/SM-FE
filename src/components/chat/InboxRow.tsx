@@ -3,14 +3,14 @@ import { timeAgo } from '../../lib/time'
 import { CURRENT_USER_ID } from '../../mocks/users'
 import { Avatar } from '../common/Avatar'
 import { cn } from '../../lib/cn'
-import type { Thread } from '../../types'
+import type { Thread, PublicProfile } from '../../types'
 import styles from './InboxRow.module.css'
 
 type Props = { t: Thread }
 
 export function InboxRow({ t }: Props) {
   const { threadId } = useParams()
-  const other = t.participants.find((p) => p.id !== CURRENT_USER_ID) ?? t.participants[0]!
+  const other = t.participants.find((p: PublicProfile) => p.id !== CURRENT_USER_ID) ?? t.participants[0]!
   const isActive = t.id === threadId
 
   return (

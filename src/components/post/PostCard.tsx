@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useIsPostLocked } from '../../hooks/useIsPostLocked'
 import { usePostEngagement } from '../../hooks/usePostEngagement'
+import { useSpotlight } from '../../hooks/useSpotlight'
+import { useIntersection } from '../../hooks/useIntersection'
 import { useSubscriptionStore } from '../../stores/subscriptionStore'
 import type { Post } from '../../types'
 import { LikeCount } from './LikeCount'
@@ -23,9 +25,13 @@ export function PostCard({ post }: Props) {
   const toggleSub = useSubscriptionStore((s) => s.toggleSubscribe)
   const { likeCount } = usePostEngagement(post)
   const [showLikes, setShowLikes] = useState(false)
+  const [showCommentBar, setShowCommentBar] = useState(false)
+  const spotlightRef = useSpotlight()
+  const { ref: intersectionRef, isVisible } = useIntersection()
 
   return (
-    <article className={styles.root}>
+    <div ref={intersectionRef as any} className={`post-anim-wrapper ${isVisible ? 'visible' : ''}`}>
+    <article ref={spotlightRef as any} className={styles.root}>
       <Link to={`/p/${post.id}`} className={styles.srOnly} tabIndex={-1}>
         View post
       </Link>
@@ -35,7 +41,16 @@ export function PostCard({ post }: Props) {
         locked={locked}
         onSubscribe={() => toggleSub(post.authorId)}
       />
-      <PostActions post={post} disabled={locked} />
+      <PostActions 
+        post={post} 
+        disabled={locked} 
+        onOpenComments={() => {
+          setShowCommentBar(prev => !prev)
+          setTimeout(() => {
+            document.getElementById(`commentInput-${post.id}`)?.focus()
+          }, 0)
+        }} 
+      />
       <LikeCount
         count={likeCount}
         disabled={locked}
@@ -50,7 +65,8 @@ export function PostCard({ post }: Props) {
       )}
       <PostCaption post={post} locked={locked} showCommentCta />
       <CommentList post={post} max={2} locked={locked} />
-      <CommentComposer post={post} disabled={locked} />
+      {showCommentBar && <CommentComposer post={post} disabled={locked} />}
     </article>
+    </div>
   )
 }
