@@ -24,9 +24,9 @@ export function CallsPage() {
       apiFetch('/chat/calls/history').then(res => res.json()),
       apiFetch('/users/all').then(res => res.json())
     ]).then(([history, allUsers]) => {
-      setCalls(history);
+      setCalls(Array.isArray(history) ? history : []);
       const userMap: Record<string, any> = {};
-      allUsers.forEach((u: any) => {
+      (Array.isArray(allUsers) ? allUsers : []).forEach((u: any) => {
         userMap[String(u.id)] = u;
         userMap[String(u.authUserId)] = u;
       });

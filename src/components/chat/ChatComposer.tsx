@@ -57,6 +57,7 @@ export function ChatComposer({ threadId, userId, onSend, disabled }: Props) {
       const mediaRecorder = new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
       mediaRecorderRef.current = mediaRecorder;
       audioChunksRef.current = [];
+      const startTime = Date.now();
 
       mediaRecorder.ondataavailable = (event) => {
         if (event.data.size > 0) {
@@ -67,7 +68,7 @@ export function ChatComposer({ threadId, userId, onSend, disabled }: Props) {
       mediaRecorder.onstop = async () => {
         const extension = (mimeType?.includes('mp4') || mimeType?.includes('aac')) ? 'mp4' : 'webm';
         const audioBlob = new Blob(audioChunksRef.current, { type: mimeType || 'audio/webm' });
-        const duration = recordingDuration;
+        const duration = Math.floor((Date.now() - startTime) / 1000);
         
         // Upload audio
         const formData = new FormData();

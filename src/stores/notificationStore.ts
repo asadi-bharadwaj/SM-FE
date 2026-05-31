@@ -15,6 +15,7 @@ type Notification = {
 type NotificationState = {
   notifications: Notification[];
   unreadCount: number;
+  latestNotification: Notification | null;
   connected: boolean;
   client: Client | null;
   connect: (userId: string) => void;
@@ -22,11 +23,13 @@ type NotificationState = {
   addNotification: (notif: Notification) => void;
   markAllRead: () => void;
   fetchNotifications: (userId: string) => Promise<void>;
+  clearLatestNotification: () => void;
 };
 
 export const useNotificationStore = create<NotificationState>((set, get) => ({
   notifications: [],
   unreadCount: 0,
+  latestNotification: null,
   connected: false,
   client: null,
 
@@ -66,7 +69,7 @@ export const useNotificationStore = create<NotificationState>((set, get) => ({
     const { client } = get();
     if (client) {
       client.deactivate();
-      set({ connected: false, client: null });
+      set({ connected: false, client: null, latestNotification: null });
     }
   },
 
@@ -94,8 +97,13 @@ export const useNotificationStore = create<NotificationState>((set, get) => ({
       return {
         notifications: [notif, ...state.notifications].slice(0, 20),
         unreadCount: state.unreadCount + 1,
+        latestNotification: notif,
       };
     });
+  },
+
+  clearLatestNotification: () => {
+    set({ latestNotification: null });
   },
 
   markAllRead: () => {

@@ -83,7 +83,7 @@ function Item({ to, label, badge }: { to: string; label: string; badge?: number 
 
 export function AppLayout() {
   const { connect: connectChat, unreadThreads } = useChatStore();
-  const { connect: connectNotif, unreadCount, notifications } = useNotificationStore();
+  const { connect: connectNotif, unreadCount, latestNotification, clearLatestNotification } = useNotificationStore();
   const [toast, setToast] = useState<any>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
@@ -102,13 +102,15 @@ export function AppLayout() {
 
   // Toast effect for new notifications
   useEffect(() => {
-    if (notifications.length > 0) {
-      const latest = notifications[0];
-      setToast(latest);
-      const timer = setTimeout(() => setToast(null), 5000);
+    if (latestNotification) {
+      setToast(latestNotification);
+      const timer = setTimeout(() => {
+        setToast(null);
+        clearLatestNotification();
+      }, 5000);
       return () => clearTimeout(timer);
     }
-  }, [notifications]);
+  }, [latestNotification, clearLatestNotification]);
 
   // Close menu on navigation
   const { pathname } = useLocation();
@@ -132,32 +134,32 @@ export function AppLayout() {
             opacity: 1 !important;
           }
           
-          .dynamic-island {
+          .toast-notification {
             position: fixed;
-            top: 24px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(10, 10, 10, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            bottom: 24px;
+            right: 24px;
+            background: rgba(15, 15, 15, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 12px 24px;
-            border-radius: 30px;
+            border-left: 4px solid #00c6ff;
+            padding: 16px 20px;
+            border-radius: 8px;
             color: #fff;
             z-index: 9999;
-            min-width: 200px;
-            max-width: 400px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5), 0 0 20px rgba(0, 198, 255, 0.15);
+            min-width: 280px;
+            max-width: 380px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
             display: flex;
             flex-direction: column;
-            gap: 2px;
-            animation: islandDrop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            gap: 4px;
+            animation: slideInRight 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             overflow: hidden;
-            text-align: center;
+            text-align: left;
           }
-          @keyframes islandDrop {
-            0% { transform: translate(-50%, -40px) scale(0.8); opacity: 0; }
-            100% { transform: translate(-50%, 0) scale(1); opacity: 1; }
+          @keyframes slideInRight {
+            0% { transform: translateX(120%); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
           }
           
           .page-transition-enter {
@@ -278,9 +280,9 @@ export function AppLayout() {
       <GlobalCallManager />
 
       {toast && (
-        <div className="dynamic-island">
-          <div style={{ fontWeight: 700, fontSize: "14px", color: "#00c6ff" }}>{toast.title}</div>
-          <div style={{ fontSize: "13px", color: "#ccc" }}>{toast.message}</div>
+        <div className="toast-notification">
+          <div style={{ fontWeight: 600, fontSize: "15px", color: "#fff" }}>{toast.title}</div>
+          <div style={{ fontSize: "13px", color: "#aaa" }}>{toast.message}</div>
         </div>
       )}
 
